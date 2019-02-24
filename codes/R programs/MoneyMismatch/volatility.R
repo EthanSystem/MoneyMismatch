@@ -128,7 +128,7 @@ names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样�
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据指标结果_BIS_自动生成的.xlsx",
   sheetName = '中国',
   append = TRUE
 )
@@ -263,7 +263,7 @@ names(dataframe_statistic) <- c('时点开始', '时点结束', '样本均值', 
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_statistic,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据指标结果_BIS_自动生成的.xlsx",
   sheetName = '印度',
   append = TRUE
 )
@@ -388,7 +388,7 @@ names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样�
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据指标结果_BIS_自动生成的.xlsx",
   sheetName = '巴西',
   append = TRUE
 )
@@ -517,7 +517,7 @@ names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样�
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据指标结果_BIS_自动生成的.xlsx",
   sheetName = '俄罗斯',
   append = TRUE
 )
