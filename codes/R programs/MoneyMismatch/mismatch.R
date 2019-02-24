@@ -10,8 +10,8 @@ library(lmtest)
 root_path <- getwd()
 
 # 导入要计算货币错配程度的表格数据
-# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
-data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/计算SSM的数据.xlsx", sheet = "need calculating of Chinese")
+# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
+data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/计算SSM的数据.xlsx", sheet = "need calculating of Chinese")
 
 # Log 化预处理
 data_need_log <- log(data_original[,c("AECM","REF","REER")])

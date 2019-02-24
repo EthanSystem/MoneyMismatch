@@ -21,11 +21,11 @@ root_path <- getwd()
 ##### 中国的 #######
 
 # 导入要计算货币错配程度的表格数据
-# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
+# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
 
 data_original <-
   readxl::read_xlsx(
-    path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/要处理的金砖四国汇率日度数据_BIS.xlsx",
+    path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/要处理的金砖四国汇率日度数据_BIS.xlsx",
     sheet = "中国日度数据",
     col_types = c("date", "numeric")
   )
@@ -63,7 +63,7 @@ for (i in 1:length(data_used.time.keyword)) {
 }
 
 # 计算样本数据的一阶差分，生成新的数据集。
-data_used.gradient <- data.frame(as.character.Date(time=data_used$time[-1]),data=1)
+data_used.gradient <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.gradient$data <- diff(data_used$data,lag = 1,differences = 1)
 data_used.gradient.timeRange.index <-
   array(dim = length(data_used.time.keyword))
@@ -73,7 +73,7 @@ for (i in 1:length(data_used.time.keyword)) {
 }
 
 # 计算样本数据的变化率，生成新的数据集。
-data_used.rate_of_change <- data.frame(as.character.Date(time=data_used$time[-1]),data=1)
+data_used.rate_of_change <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.rate_of_change$data <- data_used.gradient$data/data_used$data[-length(data_used$time)]
 data_used.rate_of_change.timeRange.index <- data_used.gradient.timeRange.index
 
@@ -128,19 +128,19 @@ names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样�
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
   sheetName = '中国',
   append = TRUE
 )
 xlsx::write.xlsx2(
   data_used.gradient,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率差分数据_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率差分数据_BIS_自动生成的.xlsx",
   sheetName = '中国',
   append = TRUE
 )
 xlsx::write.xlsx2(
   data_used.rate_of_change,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率变化率数据_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率变化率数据_BIS_自动生成的.xlsx",
   sheetName = '中国',
   append = TRUE
 )
@@ -155,11 +155,11 @@ xlsx::write.xlsx2(
 ##### 印度的 #######
 
 # 导入要计算货币错配程度的表格数据
-# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
+# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
 
 data_original <-
   readxl::read_xlsx(
-    path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/要处理的金砖四国汇率日度数据_BIS.xlsx",
+    path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/要处理的金砖四国汇率日度数据_BIS.xlsx",
     sheet = "印度日度数据",
     col_types = c("date", "numeric")
   )
@@ -176,7 +176,6 @@ data_used.time.keyword <-
       '1975-09-24',
       '1980-01-02',
       '1991-06-28',
-      '1991-07-10',
       '1992-03-02',
       '1993-03-01',
       '1994-08-01',
@@ -199,7 +198,7 @@ for (i in 1:length(data_used.time.keyword)) {
 }
 
 # 计算样本数据的一阶差分，生成新的数据集。
-data_used.gradient <- data.frame(as.character.Date(time=data_used$time[-1]),data=1)
+data_used.gradient <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.gradient$data <- diff(data_used$data,lag = 1,differences = 1)
 data_used.gradient.timeRange.index <-
   array(dim = length(data_used.time.keyword))
@@ -209,7 +208,7 @@ for (i in 1:length(data_used.time.keyword)) {
 }
 
 # 计算样本数据的变化率，生成新的数据集。
-data_used.rate_of_change <- data.frame(as.character.Date(time=data_used$time[-1]),data=1)
+data_used.rate_of_change <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.rate_of_change$data <- data_used.gradient$data/data_used$data[-length(data_used$time)]
 data_used.rate_of_change.timeRange.index <- data_used.gradient.timeRange.index
 
@@ -264,19 +263,19 @@ names(dataframe_statistic) <- c('时点开始', '时点结束', '样本均值', 
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_statistic,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
   sheetName = '印度',
   append = TRUE
 )
 xlsx::write.xlsx2(
   data_used.gradient,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率差分数据_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率差分数据_BIS_自动生成的.xlsx",
   sheetName = '印度',
   append = TRUE
 )
 xlsx::write.xlsx2(
   data_used.rate_of_change,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率变化率数据_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率变化率数据_BIS_自动生成的.xlsx",
   sheetName = '印度',
   append = TRUE
 )
@@ -287,11 +286,11 @@ xlsx::write.xlsx2(
 ##### 巴西的 #######
 
 # 导入要计算货币错配程度的表格数据
-# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
+# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
 
 data_original <-
   readxl::read_xlsx(
-    path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/要处理的金砖四国汇率日度数据_BIS.xlsx",
+    path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/要处理的金砖四国汇率日度数据_BIS.xlsx",
     sheet = "巴西日度数据",
     col_types = c("date", "numeric")
   )
@@ -324,7 +323,7 @@ for (i in 1:length(data_used.time.keyword)) {
 }
 
 # 计算样本数据的一阶差分，生成新的数据集。
-data_used.gradient <- data.frame(as.character.Date(time=data_used$time[-1]),data=1)
+data_used.gradient <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.gradient$data <- diff(data_used$data,lag = 1,differences = 1)
 data_used.gradient.timeRange.index <-
   array(dim = length(data_used.time.keyword))
@@ -334,7 +333,7 @@ for (i in 1:length(data_used.time.keyword)) {
 }
 
 # 计算样本数据的变化率，生成新的数据集。
-data_used.rate_of_change <- data.frame(as.character.Date(time=data_used$time[-1]),data=1)
+data_used.rate_of_change <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.rate_of_change$data <- data_used.gradient$data/data_used$data[-length(data_used$time)]
 data_used.rate_of_change.timeRange.index <- data_used.gradient.timeRange.index
 
@@ -389,19 +388,19 @@ names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样�
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
   sheetName = '巴西',
   append = TRUE
 )
 xlsx::write.xlsx2(
   data_used.gradient,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率差分数据_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率差分数据_BIS_自动生成的.xlsx",
   sheetName = '巴西',
   append = TRUE
 )
 xlsx::write.xlsx2(
   data_used.rate_of_change,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率变化率数据_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率变化率数据_BIS_自动生成的.xlsx",
   sheetName = '巴西',
   append = TRUE
 )
@@ -414,11 +413,11 @@ xlsx::write.xlsx2(
 ##### 俄罗斯的 #######
 
 # 导入要计算货币错配程度的表格数据
-# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
+# data_original <- readxl::read_xlsx(path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/判断人民币汇率制度的数据_20181126.xlsx", sheet = "need calculating")
 
 data_original <-
   readxl::read_xlsx(
-    path = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/要处理的金砖四国汇率日度数据_BIS.xlsx",
+    path = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/要处理的金砖四国汇率日度数据_BIS.xlsx",
     sheet = "俄罗斯日度数据",
     col_types = c("date", "numeric")
   )
@@ -453,7 +452,7 @@ for (i in 1:length(data_used.time.keyword)) {
 }
 
 # 计算样本数据的一阶差分，生成新的数据集。
-data_used.gradient <- data.frame(as.character.Date(time=data_used$time[-1]),data=1)
+data_used.gradient <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.gradient$data <- diff(data_used$data,lag = 1,differences = 1)
 data_used.gradient.timeRange.index <-
   array(dim = length(data_used.time.keyword))
@@ -463,7 +462,7 @@ for (i in 1:length(data_used.time.keyword)) {
 }
 
 # 计算样本数据的变化率，生成新的数据集。
-data_used.rate_of_change <- data.frame(as.character.Date(time=data_used$time[-1]),data=1)
+data_used.rate_of_change <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.rate_of_change$data <- data_used.gradient$data/data_used$data[-length(data_used$time)]
 data_used.rate_of_change.timeRange.index <- data_used.gradient.timeRange.index
 
@@ -518,19 +517,19 @@ names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样�
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据分析_BIS_自动生成的.xlsx",
   sheetName = '俄罗斯',
   append = TRUE
 )
 xlsx::write.xlsx2(
   data_used.gradient,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率差分数据_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率差分数据_BIS_自动生成的.xlsx",
   sheetName = '俄罗斯',
   append = TRUE
 )
 xlsx::write.xlsx2(
   data_used.rate_of_change,
-  file = "/Users/ethan/Documents/Ethan/CoreFiles/ProjectsFile/Research/EconomicAndFinance/MoneyMismatch/data/金砖四国汇率变化率数据_BIS_自动生成的.xlsx",
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率变化率数据_BIS_自动生成的.xlsx",
   sheetName = '俄罗斯',
   append = TRUE
 )
