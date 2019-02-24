@@ -1,0 +1,483 @@
+The options chosen are:
+h =  26.0000 
+eps1 =  0.1500 
+hetdat =  1.0000 
+hetvar =  1.0000 
+hetomega =  1.0000 
+hetq =  1.0000 
+robust =  1.0000 (prewhit =  1.0000 )
+The maximum number of breaks is:  5.0000 
+********************************************************
+Output from the global optimization
+********************************************************
+This is a partial structural change model and the following
+specifictaions were used:
+The number of regressors with fixed coefficients, p:  5.0000 
+Whether (1) or not (0) the initial values of beta are fixed:  0.0000 
+if so, at the following values:  0.0000 
+The convergence criterion is:  0.0001 
+Whether (1) or not (0) the iterations are printed:  1.0000 
+--------------------------
+Model with  1.0000 breaks
+The iterations are initialized with: 
+Break dates:  65.0000 
+Delta1: 
+ 0.0000 
+-0.0011 
+Beta1: 
+ 0.9645 
+ 0.0386 
+ 0.0121 
+-0.0076 
+ 0.0044 
+SSR1:  0.0003 
+Output from the iterations
+Iteration  1.0000 
+Break dates:  64.0000 
+Delta1: 
+ 0.0000 
+-0.0011 
+Beta1: 
+ 0.9635 
+ 0.0400 
+ 0.0123 
+-0.0078 
+ 0.0045 
+SSRN:  0.0003 
+length 0.0000 
+Model with  2.0000 breaks
+The iterations are initialized with: 
+Break dates:  65.0000  102.0000 
+Delta1: 
+ 0.0000 
+-0.0018 
+-0.0007 
+Beta1: 
+ 0.9686 
+ 0.0314 
+ 0.0126 
+-0.0047 
+ 0.0047 
+SSR1:  0.0003 
+Output from the iterations
+Iteration  1.0000 
+Break dates:  65.0000  102.0000 
+Delta1: 
+ 0.0000 
+-0.0022 
+-0.0006 
+Beta1: 
+ 0.9695 
+ 0.0274 
+ 0.0132 
+-0.0035 
+ 0.0047 
+SSRN:  0.0002 
+length 0.0000 
+Model with  3.0000 breaks
+The iterations are initialized with: 
+Break dates:  65.0000  102.0000  128.0000 
+Delta1: 
+ 0.0000 
+-0.0018 
+-0.0002 
+-0.0009 
+Beta1: 
+ 0.9690 
+ 0.0302 
+ 0.0176 
+-0.0051 
+ 0.0039 
+SSR1:  0.0002 
+Output from the iterations
+Iteration  1.0000 
+Break dates:  65.0000  102.0000  128.0000 
+Delta1: 
+ 0.0000 
+-0.0022 
+-0.0002 
+-0.0008 
+Beta1: 
+ 0.9698 
+ 0.0261 
+ 0.0182 
+-0.0039 
+ 0.0040 
+SSRN:  0.0002 
+length 0.0000 
+Model with  4.0000 breaks
+The iterations are initialized with: 
+Break dates:  65.0000  101.0000  127.0000  153.0000 
+Delta1: 
+ 0.0000 
+-0.0017 
+-0.0003 
+-0.0010 
+-0.0003 
+Beta1: 
+ 0.9727 
+ 0.0320 
+ 0.0110 
+-0.0051 
+ 0.0043 
+SSR1:  0.0002 
+Output from the iterations
+Iteration  1.0000 
+Break dates:  49.0000  76.0000  102.0000  128.0000 
+Delta1: 
+ 0.0000 
+-0.0006 
+-0.0025 
+-0.0002 
+-0.0008 
+Beta1: 
+ 0.9703 
+ 0.0257 
+ 0.0168 
+-0.0029 
+ 0.0032 
+SSRN:  0.0002 
+length 0.0000 
+Model with  5.0000 breaks
+The iterations are initialized with: 
+Break dates:  26.0000  65.0000  101.0000  127.0000  153.0000 
+Delta1: 
+ 0.0000 
+ 0.0000 
+-0.0017 
+-0.0003 
+-0.0010 
+-0.0003 
+Beta1: 
+ 0.9729 
+ 0.0320 
+ 0.0109 
+-0.0051 
+ 0.0043 
+SSR1:  0.0002 
+Output from the iterations
+Iteration  1.0000 
+Break dates:  27.0000  65.0000  101.0000  127.0000  153.0000 
+Delta1: 
+-0.0001 
+ 0.0000 
+-0.0021 
+-0.0003 
+-0.0012 
+-0.0006 
+Beta1: 
+ 0.9718 
+ 0.0278 
+ 0.0141 
+-0.0041 
+ 0.0037 
+SSRN:  0.0002 
+length 0.0000 
+The model with 1.0000 breaks has SSR :  0.0003 
+The dates of the breaks are:   64.0000 
+The model with 2.0000 breaks has SSR :  0.0002 
+The dates of the breaks are:  
+ 65.0000 
+ 102.0000 
+The model with 3.0000 breaks has SSR :  0.0002 
+The dates of the breaks are:  
+ 65.0000 
+ 102.0000 
+ 128.0000 
+The model with 4.0000 breaks has SSR :  0.0002 
+The dates of the breaks are:  
+ 49.0000 
+ 76.0000 
+ 102.0000 
+ 128.0000 
+The model with 5.0000 breaks has SSR :  0.0002 
+The dates of the breaks are:  
+ 27.0000 
+ 65.0000 
+ 101.0000 
+ 127.0000 
+ 153.0000 
+********************************************************
+Output from the testing procedures
+********************************************************
+a) supF tests against a fixed number of breaks
+--------------------------------------------------------------
+The supF test for 0 versus 1.0000 breaks (scaled by q) is: 24.9334 
+The supF test for 0 versus 2.0000 breaks (scaled by q) is: 14.7318 
+The supF test for 0 versus 3.0000 breaks (scaled by q) is: 9.3986 
+The supF test for 0 versus 4.0000 breaks (scaled by q) is: 8.2313 
+The supF test for 0 versus 5.0000 breaks (scaled by q) is: 9.8497 
+-------------------------
+The critical values at the  10.0000 % level are (for k=1 to  5.0000 ):
+ 7.0400  6.2800  5.2100  4.4100  3.4700 
+The critical values at the  5.0000 % level are (for k=1 to  5.0000 ):
+ 8.5800  7.2200  5.9600  4.9900  3.9100 
+The critical values at the  2.5000 % level are (for k=1 to  5.0000 ):
+ 10.1800  8.1400  6.7200  5.5100  4.3400 
+The critical values at the  1.0000 % level are (for k=1 to  5.0000 ):
+ 12.2900  9.3600  7.6000  6.1900  4.9100 
+--------------------------------------------------------------
+b) Dmax tests against an unknown number of breaks
+--------------------------------------------------------------
+The UDmax test is:  24.9334 
+(the critical value at the  10.0000 % level is:  7.4600 )
+(the critical value at the  5.0000 % level is:  8.8800 )
+(the critical value at the  2.5000 % level is:  10.3900 )
+(the critical value at the  1.0000 % level is:  12.3700 )
+********************************************************
+---------------------
+The WDmax test at the  10.0000 % level is:  24.9334 
+(The critical value is:  8.2000 )
+---------------------
+The WDmax test at the  5.0000 % level is:  24.9334 
+(The critical value is:  9.9100 )
+---------------------
+The WDmax test at the  2.5000 % level is:  24.9334 
+(The critical value is:  11.6700 )
+---------------------
+The WDmax test at the  1.0000 % level is:  24.9334 
+(The critical value is:  13.8300 )
+********************************************************
+supF(l+1|l) tests using global otimizers under the null
+--------------------------------------------------------------
+The supF( 2.0000 | 1.0000 ) test is :  9.4715 
+It corresponds to a new break at:  102.0000 
+The supF( 3.0000 | 2.0000 ) test is :  6.4742 
+It corresponds to a new break at:  128.0000 
+The supF( 4.0000 | 3.0000 ) test is :  0.8789 
+It corresponds to a new break at:  26.0000 
+Given the location of the breaks from the global optimization
+with  4.0000 breaks there was no more place to insert 
+an additional breaks that satisfy the minimal length requirement.
+The supF( 5.0000 | 4.0000 ) test is :  0.0000 
+It corresponds to a new break at:  0.0000 
+********************************************************
+The critical values of supF(i+1|i) at the  10.0000 % level are (for i=1 to  5.0000 ) are: 
+ 7.0400  8.5100  9.4100  10.0400  10.5800 
+The critical values of supF(i+1|i) at the  5.0000 % level are (for i=1 to  5.0000 ) are: 
+ 8.5800  10.1300  11.1400  11.8300  12.2500 
+The critical values of supF(i+1|i) at the  2.5000 % level are (for i=1 to  5.0000 ) are: 
+ 10.1800  11.8600  12.6600  13.4000  13.8900 
+The critical values of supF(i+1|i) at the  1.0000 % level are (for i=1 to  5.0000 ) are: 
+ 12.2900  13.8900  14.8000  15.2800  15.7600 
+********************************************************
+Output from the application of Information criteria
+--------------------------------------------------------------
+Values of BIC and lwz with  0.0000  breaks: -13.1392 -13.1336 
+Values of BIC and lwz with  1.0000  breaks: -13.2329 -13.1680 
+Values of BIC and lwz with  2.0000  breaks: -13.3863 -13.2619 
+Values of BIC and lwz with  3.0000  breaks: -13.3565 -13.1726 
+Values of BIC and lwz with  4.0000  breaks: -13.3081 -13.0645 
+Values of BIC and lwz with  5.0000  breaks: -13.2297 -12.9261 
+The number of breaks chosen by BIC is : 2.0000 
+The number of breaks chosen by LWZ is : 2.0000 
+********************************************************
+Output from the sequential procedure at significance level  10.0000 %
+--------------------------------------------------------------
+The first break found is at:  64.0000 
+The next break found is at:  102.0000 
+----------------------------------------------------
+The sequential procedure estimated the number of breaks at: 2.0000 
+********************************************************
+Output from the sequential procedure at significance level  5.0000 %
+--------------------------------------------------------------
+The first break found is at:  64.0000 
+----------------------------------------------------
+The sequential procedure estimated the number of breaks at: 1.0000 
+********************************************************
+Output from the sequential procedure at significance level  2.5000 %
+--------------------------------------------------------------
+The first break found is at:  64.0000 
+----------------------------------------------------
+The sequential procedure estimated the number of breaks at: 1.0000 
+********************************************************
+Output from the sequential procedure at significance level  1.0000 %
+--------------------------------------------------------------
+The first break found is at:  64.0000 
+----------------------------------------------------
+The sequential procedure estimated the number of breaks at: 1.0000 
+********************************************************
+Output from the repartition procedure for the  10.0000 % significance level
+----------------------------------------
+The updated break dates are :
+ 65.0000 
+ 102.0000 
+********************************************************
+Output from the repartition procedure for the  5.0000 % significance level
+----------------------------------------
+The updated break dates are : 64.0000 
+********************************************************
+Output from the repartition procedure for the  2.5000 % significance level
+----------------------------------------
+The updated break dates are : 64.0000 
+********************************************************
+Output from the repartition procedure for the  1.0000 % significance level
+----------------------------------------
+The updated break dates are : 64.0000 
+********************************************************
+Output from the estimation of the model selected by BIC
+--------------------------------------------------------------
+Valid cases:                   179      Dependent variable:                   Y
+Missing cases:                   0      Deletion method:                   None
+Total SS:                    0.016      Degrees of freedom:                 171
+R-squared:                   0.984      Rbar-squared:                     0.984
+Residual SS:                 0.000      Std error of est:                 0.001
+F(8,171):                 1343.017      Probability of F:                 0.000
+Durbin-Watson:               1.376
+
+                         Standard                 Prob   Standardized  Cor with
+Variable     Estimate      Error      t-value     >|t|     Estimate    Dep Var
+-------------------------------------------------------------------------------
+X1           0.969467    0.013202   73.432927     0.000    0.966450    0.984843
+X2           0.027386    0.013059    2.097122     0.037    0.022062    0.260639
+X3           0.013236    0.009085    1.456997     0.147    0.017756    0.599042
+X4          -0.003460    0.009987   -0.346472     0.729   -0.003724    0.410232
+X5           0.004707    0.002739    1.718407     0.088    0.017860    0.324103
+X6          -0.000031    0.000151   -0.203095     0.839   -0.001973    0.044850
+X7          -0.002173    0.000199  -10.898689     0.000   -0.105283   -0.057610
+X8          -0.000627    0.000137   -4.565918     0.000   -0.043812   -0.137701
+--------------------------------------------------------------
+Corrected standard errors for the coefficients
+--------------------------------------------------------------
+The corrected standard error for coefficient 1.0000 is: 52.1816 
+The corrected standard error for coefficient 2.0000 is: 16.6760 
+The corrected standard error for coefficient 3.0000 is: 14.9175 
+The corrected standard error for coefficient 4.0000 is: 18.9449 
+The corrected standard error for coefficient 5.0000 is: 3.4945 
+The corrected standard error for coefficient 6.0000 is: 0.0096 
+The corrected standard error for coefficient 7.0000 is: 0.0493 
+The corrected standard error for coefficient 8.0000 is: 0.0307 
+--------------------------------------------------------------
+Confidence intervals for the break dates
+--------------------------------------------------------------
+The 95% C.I. for the 1.0000 th break is:  47.0000  65.0000 
+The 90% C.I. for the 1.0000 th break is:  52.0000  65.0000 
+The 95% C.I. for the 2.0000 th break is:  92.0000  135.0000 
+The 90% C.I. for the 2.0000 th break is:  95.0000  126.0000 
+********************************************************
+********************************************************
+Output from the estimation of the model selected by the
+ sequential method at significance level  10.0000 %
+--------------------------------------------------------------
+Valid cases:                   179      Dependent variable:                   Y
+Missing cases:                   0      Deletion method:                   None
+Total SS:                    0.016      Degrees of freedom:                 171
+R-squared:                   0.984      Rbar-squared:                     0.984
+Residual SS:                 0.000      Std error of est:                 0.001
+F(8,171):                 1330.493      Probability of F:                 0.000
+Durbin-Watson:               1.404
+
+                         Standard                 Prob   Standardized  Cor with
+Variable     Estimate      Error      t-value     >|t|     Estimate    Dep Var
+-------------------------------------------------------------------------------
+X1           0.967482    0.013257   72.979593     0.000    0.964471    0.984843
+X2           0.030529    0.013088    2.332629     0.021    0.024594    0.260639
+X3           0.013434    0.009127    1.471905     0.143    0.018021    0.599042
+X4          -0.004004    0.010030   -0.399183     0.690   -0.004309    0.410232
+X5           0.004867    0.002750    1.769964     0.079    0.018469    0.324103
+X6          -0.000021    0.000153   -0.137674     0.891   -0.001345    0.053541
+X7          -0.002122    0.000197  -10.776551     0.000   -0.104225   -0.067673
+X8          -0.000629    0.000138   -4.563185     0.000   -0.043988   -0.137701
+--------------------------------------------------------------
+Corrected standard errors for the coefficients
+--------------------------------------------------------------
+The corrected standard error for coefficient 1.0000 is: 49.1361 
+The corrected standard error for coefficient 2.0000 is: 16.8382 
+The corrected standard error for coefficient 3.0000 is: 15.3003 
+The corrected standard error for coefficient 4.0000 is: 22.9365 
+The corrected standard error for coefficient 5.0000 is: 2.9934 
+The corrected standard error for coefficient 6.0000 is: 0.0089 
+The corrected standard error for coefficient 7.0000 is: 0.0360 
+The corrected standard error for coefficient 8.0000 is: 0.0252 
+--------------------------------------------------------------
+Confidence intervals for the break dates
+--------------------------------------------------------------
+The 95% C.I. for the 1.0000 th break is:  45.0000  65.0000 
+The 90% C.I. for the 1.0000 th break is:  50.0000  64.0000 
+The 95% C.I. for the 2.0000 th break is:  91.0000  138.0000 
+The 90% C.I. for the 2.0000 th break is:  95.0000  128.0000 
+********************************************************
+Output from the estimation of the model selected by the
+ sequential method at significance level  5.0000 %
+--------------------------------------------------------------
+Valid cases:                   179      Dependent variable:                   Y
+Missing cases:                   0      Deletion method:                   None
+Total SS:                    0.016      Degrees of freedom:                 172
+R-squared:                   0.981      Rbar-squared:                     0.980
+Residual SS:                 0.000      Std error of est:                 0.001
+F(7,172):                 1245.078      Probability of F:                 0.000
+Durbin-Watson:               1.180
+
+                         Standard                 Prob   Standardized  Cor with
+Variable     Estimate      Error      t-value     >|t|     Estimate    Dep Var
+-------------------------------------------------------------------------------
+X1           0.963470    0.014606   65.962240     0.000    0.960472    0.984843
+X2           0.039973    0.014339    2.787727     0.006    0.032202    0.260639
+X3           0.012295    0.010066    1.221464     0.224    0.016493    0.599042
+X4          -0.007797    0.011044   -0.705988     0.481   -0.008391    0.410232
+X5           0.004509    0.003033    1.486686     0.139    0.017109    0.324103
+X6          -0.000006    0.000169   -0.035215     0.972   -0.000379    0.053541
+X7          -0.001122    0.000124   -9.037733     0.000   -0.095873   -0.151578
+--------------------------------------------------------------
+Corrected standard errors for the coefficients
+--------------------------------------------------------------
+The corrected standard error for coefficient 1.0000 is: 184.9278 
+The corrected standard error for coefficient 2.0000 is: 3.5777 
+The corrected standard error for coefficient 3.0000 is: 56.0970 
+The corrected standard error for coefficient 4.0000 is: 99.3368 
+The corrected standard error for coefficient 5.0000 is: 10.2586 
+The corrected standard error for coefficient 6.0000 is: 0.0182 
+The corrected standard error for coefficient 7.0000 is: 0.0594 
+--------------------------------------------------------------
+Confidence intervals for the break dates
+--------------------------------------------------------------
+The 95% C.I. for the 1.0000 th break is:  7.0000  65.0000 
+The 90% C.I. for the 1.0000 th break is:  23.0000  65.0000 
+********************************************************
+for the  2.5000 % level, the model is the same as for the  5.0000 % level.
+The estimation is not repeated.
+----------------------------------------------------------------
+for the  1.0000 % level, the model is the same as for the  2.5000 % level.
+The estimation is not repeated.
+----------------------------------------------------------------
+********************************************************
+Output from the estimation of the model with 2.0000 breaks
+--------------------------------------------------------------
+Valid cases:                   179      Dependent variable:                   Y
+Missing cases:                   0      Deletion method:                   None
+Total SS:                    0.016      Degrees of freedom:                 171
+R-squared:                   0.984      Rbar-squared:                     0.984
+Residual SS:                 0.000      Std error of est:                 0.001
+F(8,171):                 1343.017      Probability of F:                 0.000
+Durbin-Watson:               1.376
+
+                         Standard                 Prob   Standardized  Cor with
+Variable     Estimate      Error      t-value     >|t|     Estimate    Dep Var
+-------------------------------------------------------------------------------
+X1           0.969467    0.013202   73.432927     0.000    0.966450    0.984843
+X2           0.027386    0.013059    2.097122     0.037    0.022062    0.260639
+X3           0.013236    0.009085    1.456997     0.147    0.017756    0.599042
+X4          -0.003460    0.009987   -0.346472     0.729   -0.003724    0.410232
+X5           0.004707    0.002739    1.718407     0.088    0.017860    0.324103
+X6          -0.000031    0.000151   -0.203095     0.839   -0.001973    0.044850
+X7          -0.002173    0.000199  -10.898689     0.000   -0.105283   -0.057610
+X8          -0.000627    0.000137   -4.565918     0.000   -0.043812   -0.137701
+--------------------------------------------------------------
+Corrected standard errors for the coefficients
+--------------------------------------------------------------
+The corrected standard error for coefficient 1.0000 is: 52.1816 
+The corrected standard error for coefficient 2.0000 is: 16.6760 
+The corrected standard error for coefficient 3.0000 is: 14.9175 
+The corrected standard error for coefficient 4.0000 is: 18.9449 
+The corrected standard error for coefficient 5.0000 is: 3.4945 
+The corrected standard error for coefficient 6.0000 is: 0.0096 
+The corrected standard error for coefficient 7.0000 is: 0.0493 
+The corrected standard error for coefficient 8.0000 is: 0.0307 
+--------------------------------------------------------------
+Confidence intervals for the break dates
+--------------------------------------------------------------
+The 95% C.I. for the 1.0000 th break is:  47.0000  65.0000 
+The 90% C.I. for the 1.0000 th break is:  52.0000  65.0000 
+The 95% C.I. for the 2.0000 th break is:  92.0000  135.0000 
+The 90% C.I. for the 2.0000 th break is:  95.0000  126.0000 
+********************************************************
