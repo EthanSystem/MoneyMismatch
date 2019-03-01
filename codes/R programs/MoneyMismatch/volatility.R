@@ -34,6 +34,9 @@ data_original <-
 data_used <- subset(data_original, data != 'NaN')
 data_used <- subset(data_used, data != '')
 
+# 调整日期的格式
+data_used$time <- as.character.Date(data_used$time)
+
 # 提取需要的区间段
 data_used.time.keyword <-
   as.character(
@@ -67,15 +70,19 @@ data_used.gradient <- data.frame(time=as.character.Date(data_used$time[-1]),data
 data_used.gradient$data <- diff(data_used$data,lag = 1,differences = 1)
 data_used.gradient.timeRange.index <-
   array(dim = length(data_used.time.keyword))
-for (i in 1:length(data_used.time.keyword)) {
+data_used.gradient.timeRange.index[1] <-
+  which(as.character.Date(data_used$time) == data_used.time.keyword[1])
+for (i in 2:length(data_used.time.keyword)) {
   data_used.gradient.timeRange.index[i] <-
-    which(as.character.Date(data_used$time) == data_used.time.keyword[i])+1
+    which(as.character.Date(data_used$time) == data_used.time.keyword[i])-1
 }
+data_used.gradient.time.keyword <- data_used.gradient$time[data_used.gradient.timeRange.index]
 
 # 计算样本数据的变化率，生成新的数据集。
 data_used.rate_of_change <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.rate_of_change$data <- data_used.gradient$data/data_used$data[-length(data_used$time)]
 data_used.rate_of_change.timeRange.index <- data_used.gradient.timeRange.index
+data_used.rate_of_change.time.keyword <- data_used.rate_of_change$time[data_used.rate_of_change.timeRange.index]
 
 # 计算每一区间段的指标：
 # 样本数据的均值
@@ -123,12 +130,18 @@ dataframe_used <-
     as.numeric(data_used.rate_of_change.mean),
     as.numeric(data_used.rate_of_change.variance)
   )
-names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样本方差','差分样本均值','差分样本方差','变化率样本均值','变化率样本方差')
+names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样本方差','样本差分均值','样本差分方差','样本日变化率均值','样本日变化率方差')
 
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
   file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据指标结果_BIS_自动生成的.xlsx",
+  sheetName = '中国',
+  append = TRUE
+)
+xlsx::write.xlsx2(
+  data_used,
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率日度数据_BIS_自动生成的.xlsx",
   sheetName = '中国',
   append = TRUE
 )
@@ -189,6 +202,10 @@ data_used.time.keyword <-
     )
   )
 
+# 调整日期的格式
+data_used$time <- as.character.Date(data_used$time)
+
+
 # 对样本生成新的数据集
 data_used.timeRange.index <-
   array(dim = length(data_used.time.keyword))
@@ -202,15 +219,19 @@ data_used.gradient <- data.frame(time=as.character.Date(data_used$time[-1]),data
 data_used.gradient$data <- diff(data_used$data,lag = 1,differences = 1)
 data_used.gradient.timeRange.index <-
   array(dim = length(data_used.time.keyword))
-for (i in 1:length(data_used.time.keyword)) {
+data_used.gradient.timeRange.index[1] <-
+  which(as.character.Date(data_used$time) == data_used.time.keyword[1])
+for (i in 2:length(data_used.time.keyword)) {
   data_used.gradient.timeRange.index[i] <-
-    which(as.character.Date(data_used$time) == data_used.time.keyword[i])+1
+    which(as.character.Date(data_used$time) == data_used.time.keyword[i])-1
 }
+data_used.gradient.time.keyword <- data_used.gradient$time[data_used.gradient.timeRange.index]
 
 # 计算样本数据的变化率，生成新的数据集。
 data_used.rate_of_change <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.rate_of_change$data <- data_used.gradient$data/data_used$data[-length(data_used$time)]
 data_used.rate_of_change.timeRange.index <- data_used.gradient.timeRange.index
+data_used.rate_of_change.time.keyword <- data_used.rate_of_change$time[data_used.rate_of_change.timeRange.index]
 
 # 计算每一区间段的指标：
 # 样本数据的均值
@@ -258,12 +279,18 @@ dataframe_statistic <-
     as.numeric(data_used.rate_of_change.mean),
     as.numeric(data_used.rate_of_change.variance)
   )
-names(dataframe_statistic) <- c('时点开始', '时点结束', '样本均值', '样本方差','差分样本均值','差分样本方差','变化率样本均值','变化率样本方差')
+names(dataframe_statistic) <- c('时点开始', '时点结束', '样本均值', '样本方差','样本差分均值','样本差分方差','样本日变化率均值','样本日变化率方差')
 
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_statistic,
   file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据指标结果_BIS_自动生成的.xlsx",
+  sheetName = '印度',
+  append = TRUE
+)
+xlsx::write.xlsx2(
+  data_used,
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率日度数据_BIS_自动生成的.xlsx",
   sheetName = '印度',
   append = TRUE
 )
@@ -313,6 +340,9 @@ data_used.time.keyword <-
       '2018-12-31'
     )
   )
+  
+# 调整日期的格式
+data_used$time <- as.character.Date(data_used$time)
 
 # 对样本生成新的数据集
 data_used.timeRange.index <-
@@ -327,15 +357,19 @@ data_used.gradient <- data.frame(time=as.character.Date(data_used$time[-1]),data
 data_used.gradient$data <- diff(data_used$data,lag = 1,differences = 1)
 data_used.gradient.timeRange.index <-
   array(dim = length(data_used.time.keyword))
-for (i in 1:length(data_used.time.keyword)) {
+data_used.gradient.timeRange.index[1] <-
+  which(as.character.Date(data_used$time) == data_used.time.keyword[1])
+for (i in 2:length(data_used.time.keyword)) {
   data_used.gradient.timeRange.index[i] <-
-    which(as.character.Date(data_used$time) == data_used.time.keyword[i])+1
+    which(as.character.Date(data_used$time) == data_used.time.keyword[i])-1
 }
+data_used.gradient.time.keyword <- data_used.gradient$time[data_used.gradient.timeRange.index]
 
 # 计算样本数据的变化率，生成新的数据集。
 data_used.rate_of_change <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.rate_of_change$data <- data_used.gradient$data/data_used$data[-length(data_used$time)]
 data_used.rate_of_change.timeRange.index <- data_used.gradient.timeRange.index
+data_used.rate_of_change.time.keyword <- data_used.rate_of_change$time[data_used.rate_of_change.timeRange.index]
 
 # 计算每一区间段的指标：
 # 样本数据的均值
@@ -383,12 +417,18 @@ dataframe_used <-
     as.numeric(data_used.rate_of_change.mean),
     as.numeric(data_used.rate_of_change.variance)
   )
-names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样本方差','差分样本均值','差分样本方差','变化率样本均值','变化率样本方差')
+names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样本方差','样本差分均值','样本差分方差','样本日变化率均值','样本日变化率方差')
 
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
   file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据指标结果_BIS_自动生成的.xlsx",
+  sheetName = '巴西',
+  append = TRUE
+)
+xlsx::write.xlsx2(
+  data_used,
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率日度数据_BIS_自动生成的.xlsx",
   sheetName = '巴西',
   append = TRUE
 )
@@ -442,6 +482,9 @@ data_used.time.keyword <-
       '2018-12-31'
     )
   )
+  
+# 调整日期的格式
+data_used$time <- as.character.Date(data_used$time)
 
 # 对样本生成新的数据集
 data_used.timeRange.index <-
@@ -456,15 +499,19 @@ data_used.gradient <- data.frame(time=as.character.Date(data_used$time[-1]),data
 data_used.gradient$data <- diff(data_used$data,lag = 1,differences = 1)
 data_used.gradient.timeRange.index <-
   array(dim = length(data_used.time.keyword))
-for (i in 1:length(data_used.time.keyword)) {
+data_used.gradient.timeRange.index[1] <-
+  which(as.character.Date(data_used$time) == data_used.time.keyword[1])
+for (i in 2:length(data_used.time.keyword)) {
   data_used.gradient.timeRange.index[i] <-
-    which(as.character.Date(data_used$time) == data_used.time.keyword[i])+1
+    which(as.character.Date(data_used$time) == data_used.time.keyword[i])-1
 }
+data_used.gradient.time.keyword <- data_used.gradient$time[data_used.gradient.timeRange.index]
 
 # 计算样本数据的变化率，生成新的数据集。
 data_used.rate_of_change <- data.frame(time=as.character.Date(data_used$time[-1]),data=1)
 data_used.rate_of_change$data <- data_used.gradient$data/data_used$data[-length(data_used$time)]
 data_used.rate_of_change.timeRange.index <- data_used.gradient.timeRange.index
+data_used.rate_of_change.time.keyword <- data_used.rate_of_change$time[data_used.rate_of_change.timeRange.index]
 
 # 计算每一区间段的指标：
 # 样本数据的均值
@@ -512,12 +559,18 @@ dataframe_used <-
     as.numeric(data_used.rate_of_change.mean),
     as.numeric(data_used.rate_of_change.variance)
   )
-names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样本方差','差分样本均值','差分样本方差','变化率样本均值','变化率样本方差')
+names(dataframe_used) <- c('时点开始', '时点结束', '样本均值', '样本方差','样本差分均值','样本差分方差','样本日变化率均值','样本日变化率方差')
 
 # 写出数据到指定表格的指定位置
 xlsx::write.xlsx2(
   dataframe_used,
   file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率数据指标结果_BIS_自动生成的.xlsx",
+  sheetName = '俄罗斯',
+  append = TRUE
+)
+xlsx::write.xlsx2(
+  data_used,
+  file = "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data/金砖四国汇率日度数据_BIS_自动生成的.xlsx",
   sheetName = '俄罗斯',
   append = TRUE
 )
