@@ -27,7 +27,7 @@ source(paste(root_path, "/program_function.R", sep = ''))
 input_sheet_name <- "中国日度数据"
 
 # 提取需要的区间段
-data.time.keyword <-
+data_time_keyword <-
   as.character(
     c(
       '1981-01-02',
@@ -53,7 +53,7 @@ output_sheet_name <- "中国"
 
 input_data.sheet_name = input_sheet_name
 output_data.sheet_name = output_sheet_name
-data_used.time.keyword = data.time.keyword
+data_used.time.keyword = data_time_keyword
 # 导入要计算货币错配程度的表格数据
 data_original <-
   readxl::read_xlsx(
@@ -239,18 +239,20 @@ xlsx::write.xlsx2(
 
 
 # 输入的数据的数据表名称
-input_data.sheet_name <- "印度日度数据"
+input_sheet_name <- "印度日度数据"
 
 
 # 提取需要的区间段
-data_used.time.keyword <-
+data_time_keyword <-
   as.character(c('1973-01-02',
                  '1975-09-24',
                  '1992-03-02',
-                 '2008-04-30'))
+                 '2008-04-30',
+                 '2018-12-31'
+  ))
 
 # 输出的数据的数据表名称
-output_data.sheet_name <- "印度"
+output_sheet_name <- "印度"
 
 # ## 代入程序运算
 # emptyValue <-
@@ -262,7 +264,7 @@ output_data.sheet_name <- "印度"
 
 input_data.sheet_name = input_sheet_name
 output_data.sheet_name = output_sheet_name
-data_used.time.keyword = data.time.keyword
+data_used.time.keyword = data_time_keyword
 # 导入要计算货币错配程度的表格数据
 data_original <-
   readxl::read_xlsx(
@@ -431,20 +433,28 @@ xlsx::write.xlsx2(
 
 
 
+
+
+
+
+
+
 ##### 俄罗斯的 #######
 
 # 输入的数据的数据表名称
-input_data.sheet_name <- "俄罗斯日度数据"
+input_sheet_name <- "俄罗斯日度数据"
 
 # 提取需要的区间段
-data_used.time.keyword <-
+data_time_keyword <-
   as.character(c('1992-07-01',
                  '1995-07-05',
                  '1998-08-17',
-                 '2014-11-10'))
+                 '2014-11-10',
+                 '2018-12-31'
+  ))
 
 # 输出的数据的数据表名称
-output_data.sheet_name <- "俄罗斯"
+output_sheet_name <- "俄罗斯"
 
 # ## 代入程序运算
 # emptyValue <-
@@ -456,7 +466,7 @@ output_data.sheet_name <- "俄罗斯"
 
 input_data.sheet_name = input_sheet_name
 output_data.sheet_name = output_sheet_name
-data_used.time.keyword = data.time.keyword
+data_used.time.keyword = data_time_keyword
 # 导入要计算货币错配程度的表格数据
 data_original <-
   readxl::read_xlsx(
@@ -628,17 +638,19 @@ xlsx::write.xlsx2(
 ##### 巴西的 #######
 
 # 输入的数据的数据表名称
-input_data.sheet_name <- "巴西日度数据"
+input_sheet_name <- "巴西日度数据"
 
 # 提取需要的区间段
-data_used.time.keyword <-
+data_time_keyword <-
   as.character(c('1984-12-03',
                  '1992-05-05',
                  '1994-07-01',
-                 '1999-02-01'))
+                 '1999-02-01',
+                 '2018-12-31'
+  ))
 
 # 输出的数据的数据表名称
-output_data.sheet_name <- "巴西"
+output_sheet_name <- "巴西"
 
 # ## 代入程序运算
 # emptyValue <-
@@ -650,7 +662,7 @@ output_data.sheet_name <- "巴西"
 
 input_data.sheet_name = input_sheet_name
 output_data.sheet_name = output_sheet_name
-data_used.time.keyword = data.time.keyword
+data_used.time.keyword = data_time_keyword
 # 导入要计算货币错配程度的表格数据
 data_original <-
   readxl::read_xlsx(
