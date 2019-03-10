@@ -2,11 +2,10 @@
 
 
 
-### 根据导师在3月初给的资料做划分区间进行分析 ###
+##### 根据导师在3月初给的资料做划分区间进行分析 ###
+##### 分析波动性
 
-# 分析波动性
-
-
+##### 预处理 ########
 library(readxl)
 library(tidyr)
 library(dplyr)
@@ -20,6 +19,11 @@ setwd(root_path)
 source(paste(root_path, "/program_function.R", sep = ""))
 
 output_data.data_name <- "汇率"
+
+
+
+
+
 
 ##### 中国的 #######
 
@@ -44,14 +48,9 @@ data_time_keyword <-
 # 输出的数据的数据表名称
 output_sheet_name <- "中国"
 
-# ## 代入程序运算
-# emptyValue <-
-#   program_function(
-#     input_data.sheet_name = input_sheet_name,
-#     output_data.sheet_name = output_sheet_name,
-#     data_used.time.keyword = data.time.keyword
-#   )
 
+
+###### 重复代码段 ######
 input_data.sheet_name = input_sheet_name
 output_data.sheet_name = output_sheet_name
 data_used.time.keyword = data_time_keyword
@@ -266,14 +265,9 @@ data_time_keyword <-
 # 输出的数据的数据表名称
 output_sheet_name <- "印度"
 
-# ## 代入程序运算
-# emptyValue <-
-#   program_function(
-#     input_data.sheet_name = input_sheet_name,
-#     output_data.sheet_name = output_sheet_name,
-#     data_used.time.keyword = data.time.keyword
-#   )
 
+
+###### 重复代码段 ######
 input_data.sheet_name = input_sheet_name
 output_data.sheet_name = output_sheet_name
 data_used.time.keyword = data_time_keyword
@@ -480,14 +474,9 @@ data_time_keyword <-
 # 输出的数据的数据表名称
 output_sheet_name <- "俄罗斯"
 
-# ## 代入程序运算
-# emptyValue <-
-#   program_function(
-#     input_data.sheet_name = input_sheet_name,
-#     output_data.sheet_name = output_sheet_name,
-#     data_used.time.keyword = data.time.keyword
-#   )
 
+
+###### 重复代码段 ######
 input_data.sheet_name = input_sheet_name
 output_data.sheet_name = output_sheet_name
 data_used.time.keyword = data_time_keyword
@@ -692,14 +681,9 @@ data_time_keyword <-
 # 输出的数据的数据表名称
 output_sheet_name <- "巴西"
 
-# ## 代入程序运算
-# emptyValue <-
-#   program_function(
-#     input_data.sheet_name = input_sheet_name,
-#     output_data.sheet_name = output_sheet_name,
-#     data_used.time.keyword = data.time.keyword
-#   )
 
+
+###### 重复代码段 ######
 input_data.sheet_name = input_sheet_name
 output_data.sheet_name = output_sheet_name
 data_used.time.keyword = data_time_keyword
