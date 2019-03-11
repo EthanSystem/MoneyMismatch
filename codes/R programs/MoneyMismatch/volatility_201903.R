@@ -19,7 +19,8 @@ setwd(root_path)
 source(paste(root_path, "/program_function.R", sep = ""))
 
 output_data.data_name <- "汇率"
-
+input_data.data_source_name <- "BIS"
+output_data.project_name <- "自动生成的"
 
 
 
@@ -112,7 +113,7 @@ data_used.rate_of_change.time.keyword <-
 data_used.mean <-
   array(dim = length(data_used.time.keyword) - 1)
 
-# 样本数据的方差
+# 样本数据的标准差
 data_used.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 
@@ -121,13 +122,13 @@ data_used.variance <-
 # 差分样本数据的均值
 data_used.gradient.mean <-
   array(dim = length(data_used.time.keyword) - 1)
-# 差分样本数据的方差
+# 差分样本数据的标准差
 data_used.gradient.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 # 变化率样本数据的均值
 data_used.rate_of_change.mean <-
   array(dim = length(data_used.time.keyword) - 1)
-# 变化率样本数据的方差
+# 变化率样本数据的标准差
 data_used.rate_of_change.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 
@@ -136,18 +137,18 @@ data_used.rate_of_change.variance <-
 #   data_used.mean[i] <-
 #     mean(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
 #   data_used.variance[i] <-
-#     var(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
+#     sd(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
 #   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
 #   data_used.gradient.mean[i] <-
 #     mean(data_used.gradient$data[data_used.gradient.timeRange.index[i]+1:data_used.gradient.timeRange.index[i+1]-1])
 #   data_used.gradient.variance[i] <-
-#     var(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
+#     sd(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
 #                                   1:data_used.gradient.timeRange.index[i + 1] - 1])
 #   data_used.rate_of_change.mean[i] <-
 #     mean(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
 #                                          1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
 #   data_used.rate_of_change.variance[i] <-
-#     var(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
+#     sd(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
 #                                         1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
 # }
 
@@ -157,20 +158,20 @@ for (i in 1:length(data_used.time.keyword) - 1) {
     mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                  1] - 1)],na.rm = FALSE)
   data_used.variance[j] <-
-    var(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
+    sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                 1] - 1)],na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
     mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
                                                                                                                 1] - 1)],na.rm = FALSE)
   data_used.gradient.variance[j] <-
-    var(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
+    sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
                                   1):(data_used.gradient.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
     mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
-    var(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
+    sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                         1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   j = j + 1
 }
@@ -190,15 +191,15 @@ names(dataframe_used) <-
   c('时点开始',
     '时点结束',
     '样本均值',
-    '样本方差',
+    '样本标准差',
     '样本差分均值',
-    '样本差分方差',
+    '样本差分标准差',
     '样本日变化率均值',
-    '样本日变化率方差')
+    '样本日变化率标准差')
 
 # 写出数据到指定表格的指定位置
 output_data.data_type <- "数据指标结果"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   dataframe_used,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -207,14 +208,14 @@ xlsx::write.xlsx2(
 )
 
 output_data.data_type <- "日度数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(data_used,
   file = paste(data_path,output_data.file_name,sep='/'),
                   sheetName = output_data.sheet_name,
                   append = TRUE)
 
 output_data.data_type <- "差分数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   data_used.gradient,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -223,7 +224,7 @@ xlsx::write.xlsx2(
 )
 
 output_data.data_type <- "日变化率数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   data_used.rate_of_change,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -328,7 +329,7 @@ data_used.rate_of_change.time.keyword <-
 data_used.mean <-
   array(dim = length(data_used.time.keyword) - 1)
 
-# 样本数据的方差
+# 样本数据的标准差
 data_used.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 
@@ -337,13 +338,13 @@ data_used.variance <-
 # 差分样本数据的均值
 data_used.gradient.mean <-
   array(dim = length(data_used.time.keyword) - 1)
-# 差分样本数据的方差
+# 差分样本数据的标准差
 data_used.gradient.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 # 变化率样本数据的均值
 data_used.rate_of_change.mean <-
   array(dim = length(data_used.time.keyword) - 1)
-# 变化率样本数据的方差
+# 变化率样本数据的标准差
 data_used.rate_of_change.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 
@@ -352,18 +353,18 @@ data_used.rate_of_change.variance <-
 #   data_used.mean[i] <-
 #     mean(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
 #   data_used.variance[i] <-
-#     var(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
+#     sd(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
 #   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
 #   data_used.gradient.mean[i] <-
 #     mean(data_used.gradient$data[data_used.gradient.timeRange.index[i]+1:data_used.gradient.timeRange.index[i+1]-1])
 #   data_used.gradient.variance[i] <-
-#     var(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
+#     sd(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
 #                                   1:data_used.gradient.timeRange.index[i + 1] - 1])
 #   data_used.rate_of_change.mean[i] <-
 #     mean(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
 #                                          1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
 #   data_used.rate_of_change.variance[i] <-
-#     var(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
+#     sd(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
 #                                         1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
 # }
 
@@ -373,20 +374,20 @@ for (i in 1:length(data_used.time.keyword) - 1) {
     mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                     1] - 1)],na.rm = FALSE)
   data_used.variance[j] <-
-    var(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
+    sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                    1] - 1)],na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
     mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
                                                                                                                    1] - 1)],na.rm = FALSE)
   data_used.gradient.variance[j] <-
-    var(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
+    sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
                                    1):(data_used.gradient.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
     mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                           1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
-    var(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
+    sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   j = j + 1
 }
@@ -406,15 +407,15 @@ names(dataframe_used) <-
   c('时点开始',
     '时点结束',
     '样本均值',
-    '样本方差',
+    '样本标准差',
     '样本差分均值',
-    '样本差分方差',
+    '样本差分标准差',
     '样本日变化率均值',
-    '样本日变化率方差')
+    '样本日变化率标准差')
 
 # 写出数据到指定表格的指定位置
 output_data.data_type <- "数据指标结果"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   dataframe_used,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -423,14 +424,14 @@ xlsx::write.xlsx2(
 )
 
 output_data.data_type <- "日度数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(data_used,
-  file = paste(data_path,output_data.file_name,sep='/'),
+                  file = paste(data_path,output_data.file_name,sep='/'),
                   sheetName = output_data.sheet_name,
                   append = TRUE)
 
 output_data.data_type <- "差分数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   data_used.gradient,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -439,7 +440,7 @@ xlsx::write.xlsx2(
 )
 
 output_data.data_type <- "日变化率数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   data_used.rate_of_change,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -537,7 +538,7 @@ data_used.rate_of_change.time.keyword <-
 data_used.mean <-
   array(dim = length(data_used.time.keyword) - 1)
 
-# 样本数据的方差
+# 样本数据的标准差
 data_used.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 
@@ -546,13 +547,13 @@ data_used.variance <-
 # 差分样本数据的均值
 data_used.gradient.mean <-
   array(dim = length(data_used.time.keyword) - 1)
-# 差分样本数据的方差
+# 差分样本数据的标准差
 data_used.gradient.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 # 变化率样本数据的均值
 data_used.rate_of_change.mean <-
   array(dim = length(data_used.time.keyword) - 1)
-# 变化率样本数据的方差
+# 变化率样本数据的标准差
 data_used.rate_of_change.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 
@@ -561,18 +562,18 @@ data_used.rate_of_change.variance <-
 #   data_used.mean[i] <-
 #     mean(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
 #   data_used.variance[i] <-
-#     var(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
+#     sd(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
 #   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
 #   data_used.gradient.mean[i] <-
 #     mean(data_used.gradient$data[data_used.gradient.timeRange.index[i]+1:data_used.gradient.timeRange.index[i+1]-1])
 #   data_used.gradient.variance[i] <-
-#     var(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
+#     sd(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
 #                                   1:data_used.gradient.timeRange.index[i + 1] - 1])
 #   data_used.rate_of_change.mean[i] <-
 #     mean(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
 #                                          1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
 #   data_used.rate_of_change.variance[i] <-
-#     var(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
+#     sd(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
 #                                         1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
 # }
 
@@ -582,20 +583,20 @@ for (i in 1:length(data_used.time.keyword) - 1) {
     mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                     1] - 1)],na.rm = FALSE)
   data_used.variance[j] <-
-    var(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
+    sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                    1] - 1)],na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
     mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
                                                                                                                    1] - 1)],na.rm = FALSE)
   data_used.gradient.variance[j] <-
-    var(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
+    sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
                                    1):(data_used.gradient.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
     mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                           1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
-    var(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
+    sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   j = j + 1
 }
@@ -615,15 +616,15 @@ names(dataframe_used) <-
   c('时点开始',
     '时点结束',
     '样本均值',
-    '样本方差',
+    '样本标准差',
     '样本差分均值',
-    '样本差分方差',
+    '样本差分标准差',
     '样本日变化率均值',
-    '样本日变化率方差')
+    '样本日变化率标准差')
 
 # 写出数据到指定表格的指定位置
 output_data.data_type <- "数据指标结果"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   dataframe_used,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -632,14 +633,14 @@ xlsx::write.xlsx2(
 )
 
 output_data.data_type <- "日度数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(data_used,
-  file = paste(data_path,output_data.file_name,sep='/'),
+                  file = paste(data_path,output_data.file_name,sep='/'),
                   sheetName = output_data.sheet_name,
                   append = TRUE)
 
 output_data.data_type <- "差分数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   data_used.gradient,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -648,7 +649,7 @@ xlsx::write.xlsx2(
 )
 
 output_data.data_type <- "日变化率数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   data_used.rate_of_change,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -672,7 +673,7 @@ input_sheet_name <- "巴西日度数据"
 # 提取需要的区间段
 data_time_keyword <-
   as.character(c('1984-12-03',
-                 '1992-05-05',
+                 '1991-09-02',
                  '1994-07-01',
                  '1999-02-01',
                  '2018-12-31'
@@ -744,7 +745,7 @@ data_used.rate_of_change.time.keyword <-
 data_used.mean <-
   array(dim = length(data_used.time.keyword) - 1)
 
-# 样本数据的方差
+# 样本数据的标准差
 data_used.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 
@@ -753,13 +754,13 @@ data_used.variance <-
 # 差分样本数据的均值
 data_used.gradient.mean <-
   array(dim = length(data_used.time.keyword) - 1)
-# 差分样本数据的方差
+# 差分样本数据的标准差
 data_used.gradient.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 # 变化率样本数据的均值
 data_used.rate_of_change.mean <-
   array(dim = length(data_used.time.keyword) - 1)
-# 变化率样本数据的方差
+# 变化率样本数据的标准差
 data_used.rate_of_change.variance <-
   array(dim = length(data_used.time.keyword) - 1)
 
@@ -768,18 +769,18 @@ data_used.rate_of_change.variance <-
 #   data_used.mean[i] <-
 #     mean(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
 #   data_used.variance[i] <-
-#     var(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
+#     sd(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
 #   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
 #   data_used.gradient.mean[i] <-
 #     mean(data_used.gradient$data[data_used.gradient.timeRange.index[i]+1:data_used.gradient.timeRange.index[i+1]-1])
 #   data_used.gradient.variance[i] <-
-#     var(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
+#     sd(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
 #                                   1:data_used.gradient.timeRange.index[i + 1] - 1])
 #   data_used.rate_of_change.mean[i] <-
 #     mean(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
 #                                          1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
 #   data_used.rate_of_change.variance[i] <-
-#     var(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
+#     sd(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
 #                                         1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
 # }
 
@@ -789,20 +790,20 @@ for (i in 1:length(data_used.time.keyword) - 1) {
     mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                     1] - 1)],na.rm = FALSE)
   data_used.variance[j] <-
-    var(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
+    sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                    1] - 1)],na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
     mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
                                                                                                                    1] - 1)],na.rm = FALSE)
   data_used.gradient.variance[j] <-
-    var(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
+    sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
                                    1):(data_used.gradient.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
     mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                           1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
-    var(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
+    sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   j = j + 1
 }
@@ -822,15 +823,15 @@ names(dataframe_used) <-
   c('时点开始',
     '时点结束',
     '样本均值',
-    '样本方差',
+    '样本标准差',
     '样本差分均值',
-    '样本差分方差',
+    '样本差分标准差',
     '样本日变化率均值',
-    '样本日变化率方差')
+    '样本日变化率标准差')
 
 # 写出数据到指定表格的指定位置
 output_data.data_type <- "数据指标结果"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   dataframe_used,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -839,14 +840,14 @@ xlsx::write.xlsx2(
 )
 
 output_data.data_type <- "日度数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(data_used,
-  file = paste(data_path,output_data.file_name,sep='/'),
+                  file = paste(data_path,output_data.file_name,sep='/'),
                   sheetName = output_data.sheet_name,
                   append = TRUE)
 
 output_data.data_type <- "差分数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   data_used.gradient,
   file = paste(data_path,output_data.file_name,sep='/'),
@@ -855,7 +856,7 @@ xlsx::write.xlsx2(
 )
 
 output_data.data_type <- "日变化率数据"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_BIS_自动生成的.xlsx",sep = '')
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 xlsx::write.xlsx2(
   data_used.rate_of_change,
   file = paste(data_path,output_data.file_name,sep='/'),
