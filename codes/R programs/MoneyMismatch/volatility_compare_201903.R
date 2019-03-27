@@ -4,6 +4,8 @@
 
 ##### 根据导师在3月初给的资料做划分区间进行分析 ###
 ##### 分析波动性
+##### 分析横向的波动性
+
 
 ##### 预处理 ########
 library(readxl)
@@ -20,8 +22,8 @@ source(paste(root_path, "/program_function.R", sep = ""))
 
 output_data.data_name <- "汇率"
 input_data.data_source_name <- "BIS"
-output_data.project_name <- "自动生成的"
-
+output_data.project_name <- "横向比较_自动生成的"
+# # for example : "金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx"
 
 
 
@@ -36,11 +38,10 @@ input_sheet_name <- "中国日度数据"
 data_time_keyword <-
   as.character(
     c(
-      '1981-01-02',
       '1994-01-03',
       '2005-07-21',
-      '2010-06-21',
-      '2015-08-11',
+      # '2010-06-21',
+      # '2015-08-11',
       '2018-12-31'
     )
   )
@@ -207,7 +208,7 @@ xlsx::write.xlsx2(
   append = TRUE
 )
 
-## 暂时不用到
+# 
 # output_data.data_type <- "日度数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(data_used,
@@ -232,10 +233,10 @@ xlsx::write.xlsx2(
 #   sheetName = output_data.sheet_name,
 #   append = TRUE
 # )
-
-
-
-
+# 
+# 
+# 
+# 
 
 
 
@@ -257,11 +258,11 @@ input_sheet_name <- "印度日度数据"
 
 # 提取需要的区间段
 data_time_keyword <-
-  as.character(c('1973-01-02',
-                 '1975-09-24',
-                 '1992-03-02',
-                 '2009-02-02',
-                 '2018-12-31'
+  as.character(
+    c(
+      '1992-03-02',
+      '2009-02-02',
+      '2018-12-31'
   ))
 
 # 输出的数据的数据表名称
@@ -425,31 +426,30 @@ xlsx::write.xlsx2(
   append = TRUE
 )
 
-## 暂时不用到
-# output_data.data_type <- "日度数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(data_used,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#                   sheetName = output_data.sheet_name,
-#                   append = TRUE)
-# 
-# output_data.data_type <- "差分数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(
-#   data_used.gradient,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#   sheetName = output_data.sheet_name,
-#   append = TRUE
-# )
-# 
-# output_data.data_type <- "日变化率数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(
-#   data_used.rate_of_change,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#   sheetName = output_data.sheet_name,
-#   append = TRUE
-# )
+output_data.data_type <- "日度数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(data_used,
+  file = paste(data_path,output_data.file_name,sep='/'),
+                  sheetName = output_data.sheet_name,
+                  append = TRUE)
+
+output_data.data_type <- "差分数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(
+  data_used.gradient,
+  file = paste(data_path,output_data.file_name,sep='/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
+
+output_data.data_type <- "日变化率数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(
+  data_used.rate_of_change,
+  file = paste(data_path,output_data.file_name,sep='/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
 
 
 
@@ -468,12 +468,13 @@ input_sheet_name <- "俄罗斯日度数据"
 
 # 提取需要的区间段
 data_time_keyword <-
-  as.character(c('1992-07-01',
+  as.character(c(
                  '1995-07-06',
                  '1998-08-17',
                  '2014-11-10',
                  '2018-12-31'
-  ))
+  )
+)
 
 # 输出的数据的数据表名称
 output_sheet_name <- "俄罗斯"
@@ -636,31 +637,30 @@ xlsx::write.xlsx2(
   append = TRUE
 )
 
-## 暂时不用到
-# output_data.data_type <- "日度数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(data_used,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#                   sheetName = output_data.sheet_name,
-#                   append = TRUE)
-# 
-# output_data.data_type <- "差分数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(
-#   data_used.gradient,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#   sheetName = output_data.sheet_name,
-#   append = TRUE
-# )
-# 
-# output_data.data_type <- "日变化率数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(
-#   data_used.rate_of_change,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#   sheetName = output_data.sheet_name,
-#   append = TRUE
-# )
+output_data.data_type <- "日度数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(data_used,
+  file = paste(data_path,output_data.file_name,sep='/'),
+                  sheetName = output_data.sheet_name,
+                  append = TRUE)
+
+output_data.data_type <- "差分数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(
+  data_used.gradient,
+  file = paste(data_path,output_data.file_name,sep='/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
+
+output_data.data_type <- "日变化率数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(
+  data_used.rate_of_change,
+  file = paste(data_path,output_data.file_name,sep='/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
 
 
 
@@ -678,14 +678,8 @@ input_sheet_name <- "巴西日度数据"
 # 提取需要的区间段
 data_time_keyword <-
   as.character(c(
-                 '1984-12-03',
-                 '1991-10-01',
                  '1994-07-01',
                  '1999-02-01',
-                 '2002-10-25',
-                 '2008-08-05',
-                 '2009-10-19',
-                 '2015-09-25',
                  '2018-12-31'
   ))
 
@@ -850,31 +844,30 @@ xlsx::write.xlsx2(
   append = TRUE
 )
 
-## 暂时不用到
-# output_data.data_type <- "日度数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(data_used,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#                   sheetName = output_data.sheet_name,
-#                   append = TRUE)
-# 
-# output_data.data_type <- "差分数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(
-#   data_used.gradient,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#   sheetName = output_data.sheet_name,
-#   append = TRUE
-# )
-# 
-# output_data.data_type <- "日变化率数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(
-#   data_used.rate_of_change,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#   sheetName = output_data.sheet_name,
-#   append = TRUE
-# )
+output_data.data_type <- "日度数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(data_used,
+  file = paste(data_path,output_data.file_name,sep='/'),
+                  sheetName = output_data.sheet_name,
+                  append = TRUE)
+
+output_data.data_type <- "差分数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(
+  data_used.gradient,
+  file = paste(data_path,output_data.file_name,sep='/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
+
+output_data.data_type <- "日变化率数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(
+  data_used.rate_of_change,
+  file = paste(data_path,output_data.file_name,sep='/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
 
 
 
