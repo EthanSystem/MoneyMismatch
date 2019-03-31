@@ -34,14 +34,23 @@ output_data.project_name <- "横向比较_自动生成的"
 
 input_sheet_name <- "中国日度数据"
 
-# 提取需要的区间段
+# # 提取需要的区间段1
+# data_time_keyword <-
+#   as.character(
+#     c(
+#       '1994-01-03',
+#       '2005-07-21',
+#       # '2010-06-21',
+#       # '2015-08-11',
+#       '2018-12-31'
+#     )
+#   )
+
+# 提取需要的区间段2
 data_time_keyword <-
   as.character(
     c(
       '1994-01-03',
-      '2005-07-21',
-      # '2010-06-21',
-      # '2015-08-11',
       '2018-12-31'
     )
   )
@@ -208,33 +217,33 @@ xlsx::write.xlsx2(
   append = TRUE
 )
 
-# 
-# output_data.data_type <- "日度数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(data_used,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#                   sheetName = output_data.sheet_name,
-#                   append = TRUE)
-# 
-# output_data.data_type <- "差分数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(
-#   data_used.gradient,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#   sheetName = output_data.sheet_name,
-#   append = TRUE
-# )
-# 
-# output_data.data_type <- "日变化率数据"
-# output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
-# xlsx::write.xlsx2(
-#   data_used.rate_of_change,
-#   file = paste(data_path,output_data.file_name,sep='/'),
-#   sheetName = output_data.sheet_name,
-#   append = TRUE
-# )
-# 
-# 
+
+output_data.data_type <- "日度数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(data_used,
+  file = paste(data_path,output_data.file_name,sep='/'),
+                  sheetName = output_data.sheet_name,
+                  append = TRUE)
+
+output_data.data_type <- "差分数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(
+  data_used.gradient,
+  file = paste(data_path,output_data.file_name,sep='/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
+
+output_data.data_type <- "日变化率数据"
+output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+xlsx::write.xlsx2(
+  data_used.rate_of_change,
+  file = paste(data_path,output_data.file_name,sep='/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
+
+
 # 
 # 
 
@@ -256,14 +265,26 @@ xlsx::write.xlsx2(
 input_sheet_name <- "印度日度数据"
 
 
-# 提取需要的区间段
+# # 提取需要的区间段1
+# data_time_keyword <-
+#   as.character(
+#     c(
+#       '1992-03-02',
+#       '2009-02-02',
+#       '2018-12-31'
+#   ))
+
+
+# 提取需要的区间段2
 data_time_keyword <-
   as.character(
     c(
-      '1992-03-02',
-      '2009-02-02',
+      '1994-01-03',
       '2018-12-31'
-  ))
+    ))
+
+
+
 
 # 输出的数据的数据表名称
 output_sheet_name <- "印度"
@@ -466,13 +487,21 @@ xlsx::write.xlsx2(
 # 输入的数据的数据表名称
 input_sheet_name <- "俄罗斯日度数据"
 
-# 提取需要的区间段
+# # 提取需要的区间段1
+# data_time_keyword <-
+#   as.character(c(
+#                  '1995-07-06',
+#                  '1998-08-17',
+#                  '2014-11-10',
+#                  '2018-12-31'
+#   )
+# )
+
+# 提取需要的区间段2
 data_time_keyword <-
   as.character(c(
-                 '1995-07-06',
-                 '1998-08-17',
-                 '2014-11-10',
-                 '2018-12-31'
+    '1994-01-03',
+    '2018-12-31'
   )
 )
 
@@ -675,12 +704,20 @@ xlsx::write.xlsx2(
 # 输入的数据的数据表名称
 input_sheet_name <- "巴西日度数据"
 
-# 提取需要的区间段
+# # 提取需要的区间段1
+# data_time_keyword <-
+#   as.character(c(
+#                  '1994-07-01',
+#                  '1999-02-01',
+#                  '2018-12-31'
+#   ))
+
+
+# 提取需要的区间段2
 data_time_keyword <-
   as.character(c(
-                 '1994-07-01',
-                 '1999-02-01',
-                 '2018-12-31'
+    '1994-01-03',
+    '2018-12-31'
   ))
 
 # 输出的数据的数据表名称

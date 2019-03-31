@@ -155,8 +155,7 @@ data_used.rate_of_change.variance <-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                 1] - 1)],na.rm = FALSE)
+    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)],na.rm = FALSE)
   data_used.variance[j] <-
     sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
                                                                                 1] - 1)],na.rm = FALSE)
@@ -173,6 +172,11 @@ for (i in 1:length(data_used.time.keyword) - 1) {
   data_used.rate_of_change.variance[j] <-
     sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
                                         1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+  
+  # ARMA模型
+  # 自相关性和偏相关性检验
+  
+  
   j = j + 1
 }
 
