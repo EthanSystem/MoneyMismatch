@@ -14,6 +14,7 @@ library(dplyr)
 library(urca)
 library(lmtest)
 library(xlsx)
+library(dyn)
 
 root_path <- getwd()
 data_path <- "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data"

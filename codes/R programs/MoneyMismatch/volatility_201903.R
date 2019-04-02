@@ -2,6 +2,7 @@
 
 
 
+
 ##### 根据导师在3月初给的资料做划分区间进行分析 ###
 ##### 分析波动性
 
@@ -12,9 +13,11 @@ library(dplyr)
 library(urca)
 library(lmtest)
 library(xlsx)
+library(forecast)
 
 root_path <- getwd()
-data_path <- "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data"
+data_path <-
+  "/Users/ethan/Documents/Ethan/CoreFiles/CodesFile/MoneyMismatch/data"
 setwd(root_path)
 source(paste(root_path, "/program_function.R", sep = ""))
 
@@ -131,6 +134,19 @@ data_used.rate_of_change.mean <-
 # 变化率样本数据的标准差
 data_used.rate_of_change.variance <-
   array(dim = length(data_used.time.keyword) - 1)
+# ACF、PACF、自动化ARMA的变量定义
+data_used.acf <- list()
+data_used.pacf <- list()
+data_used.gradient.acf <- list()
+data_used.gradient.pacf <- list()
+data_used.autoARMA <- list()
+data_used.gradient.autoARMA <- list()
+data_used.RandomWalk <-
+  list(lm = list(),
+       summary = list(),
+       confint = list())
+
+
 
 # for (i in 1:length(data_used.time.keyword) - 1) {
 #   i
@@ -155,35 +171,61 @@ data_used.rate_of_change.variance <-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.variance[j] <-
     sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                1] - 1)],na.rm = FALSE)
+                                                                                  1] - 1)], na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
     mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
-                                                                                                                1] - 1)],na.rm = FALSE)
+                                                                                                                   1] - 1)], na.rm = FALSE)
   data_used.gradient.variance[j] <-
     sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
-                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
     mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                         1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
     sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   
   # ARMA模型
   # 自相关性和偏相关性检验
+  data_used.acf[[j]] <-
+    acf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.acf[[j]]
+  data_used.pacf[[j]] <-
+    pacf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.pacf[[j]]
+  # 自动化ARMA模型
+  data_used.autoARMA[[j]] <-
+    forecast::auto.arima(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.autoARMA[[j]]
+  # 判别是否符合随机游走
+  data_used.RandomWalk$lm[[j]] <-
+    lm(formula = data_used$data ~ stats::lag(x = data_used$data, 1))
+  data_used.RandomWalk$lm[[j]]
+  data_used.RandomWalk$summary[[j]] <-
+    summary(data_used.RandomWalk$lm[[j]])
+  data_used.RandomWalk$summary[[j]]
+  data_used.RandomWalk$confint[[j]] <-
+    confint(data_used.RandomWalk$lm[[j]])
+  data_used.RandomWalk$confint[[j]]
+  
   
   
   j = j + 1
 }
 
+
+# 生成简单统计量的数据框
 dataframe_used <-
   data.frame(
     data_used.time.keyword[-length(data_used.time.keyword)],
-    as.character.Date(c(data_used$time[data_used.timeRange.index[-c(1,length(data_used.time.keyword))]-1],data_used.time.keyword[length(data_used.time.keyword)])),
+    as.character.Date(c(
+      data_used$time[data_used.timeRange.index[-c(1, length(data_used.time.keyword))] -
+                       1], data_used.time.keyword[length(data_used.time.keyword)]
+    )),
     as.numeric(data_used.mean),
     as.numeric(data_used.variance),
     as.numeric(data_used.gradient.mean),
@@ -203,10 +245,21 @@ names(dataframe_used) <-
 
 # 写出数据到指定表格的指定位置
 output_data.data_type <- "数据指标结果"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+output_data.file_name <-
+  paste(
+    "金砖四国",
+    output_data.data_name,
+    output_data.data_type,
+    "_",
+    input_data.data_source_name,
+    "_",
+    output_data.project_name,
+    ".xlsx",
+    sep = ''
+  )
 xlsx::write.xlsx2(
   dataframe_used,
-  file = paste(data_path,output_data.file_name,sep='/'),
+  file = paste(data_path, output_data.file_name, sep = '/'),
   sheetName = output_data.sheet_name,
   append = TRUE
 )
@@ -218,7 +271,7 @@ xlsx::write.xlsx2(
 #   file = paste(data_path,output_data.file_name,sep='/'),
 #                   sheetName = output_data.sheet_name,
 #                   append = TRUE)
-# 
+#
 # output_data.data_type <- "差分数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(
@@ -227,7 +280,7 @@ xlsx::write.xlsx2(
 #   sheetName = output_data.sheet_name,
 #   append = TRUE
 # )
-# 
+#
 # output_data.data_type <- "日变化率数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(
@@ -238,11 +291,41 @@ xlsx::write.xlsx2(
 # )
 
 
+# 生成判断是否随机游走的数据框
 
+data_used.RandomWalk.summary.coefficients_dataframe <- lapply(lapply(X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],FUN = t),FUN = as.vector) %>% unlist %>% matrix(ncol = 8,byrow = TRUE) %>% data.frame()
 
+names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
+  'beta 0',
+  'Std. Error of beta 0',
+  't-value of beta 0',
+  'Pr(>|t|) of beta 0',
+  'beta 1',
+  'Std. Error of beta 1',
+  't-value of beta 1',
+  'Pr(>|t|) of beta 1'
+)
 
-
-
+# 写出数据到指定表格的指定位置
+output_data.data_type <- "判断随机游走"
+output_data.file_name <-
+  paste(
+    "金砖四国",
+    output_data.data_name,
+    output_data.data_type,
+    "_",
+    input_data.data_source_name,
+    "_",
+    output_data.project_name,
+    ".xlsx",
+    sep = ''
+  )
+xlsx::write.xlsx2(
+  data_used.RandomWalk.summary.coefficients_dataframe,
+  file = paste(data_path, output_data.file_name, sep = '/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
 
 
 
@@ -261,11 +344,12 @@ input_sheet_name <- "印度日度数据"
 
 # 提取需要的区间段
 data_time_keyword <-
-  as.character(c('1973-01-02',
-                 '1975-09-24',
-                 '1992-03-02',
-                 '2009-02-02',
-                 '2018-12-31'
+  as.character(c(
+    '1973-01-02',
+    '1975-09-24',
+    '1992-03-02',
+    '2009-02-02',
+    '2018-12-31'
   ))
 
 # 输出的数据的数据表名称
@@ -352,6 +436,19 @@ data_used.rate_of_change.mean <-
 # 变化率样本数据的标准差
 data_used.rate_of_change.variance <-
   array(dim = length(data_used.time.keyword) - 1)
+# ACF、PACF、自动化ARMA的变量定义
+data_used.acf <- list()
+data_used.pacf <- list()
+data_used.gradient.acf <- list()
+data_used.gradient.pacf <- list()
+data_used.autoARMA <- list()
+data_used.gradient.autoARMA <- list()
+data_used.RandomWalk <-
+  list(lm = list(),
+       summary = list(),
+       confint = list())
+
+
 
 # for (i in 1:length(data_used.time.keyword) - 1) {
 #   i
@@ -376,31 +473,61 @@ data_used.rate_of_change.variance <-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                    1] - 1)],na.rm = FALSE)
+    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.variance[j] <-
     sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                   1] - 1)],na.rm = FALSE)
+                                                                                  1] - 1)], na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
     mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
-                                                                                                                   1] - 1)],na.rm = FALSE)
+                                                                                                                   1] - 1)], na.rm = FALSE)
   data_used.gradient.variance[j] <-
     sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
-                                   1):(data_used.gradient.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
     mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
     sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                         1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+  
+  # ARMA模型
+  # 自相关性和偏相关性检验
+  data_used.acf[[j]] <-
+    acf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.acf[[j]]
+  data_used.pacf[[j]] <-
+    pacf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.pacf[[j]]
+  # 自动化ARMA模型
+  data_used.autoARMA[[j]] <-
+    forecast::auto.arima(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.autoARMA[[j]]
+  # 判别是否符合随机游走
+  data_used.RandomWalk$lm[[j]] <-
+    lm(formula = data_used$data ~ stats::lag(x = data_used$data, 1))
+  data_used.RandomWalk$lm[[j]]
+  data_used.RandomWalk$summary[[j]] <-
+    summary(data_used.RandomWalk$lm[[j]])
+  data_used.RandomWalk$summary[[j]]
+  data_used.RandomWalk$confint[[j]] <-
+    confint(data_used.RandomWalk$lm[[j]])
+  data_used.RandomWalk$confint[[j]]
+  
+  
+  
   j = j + 1
 }
 
+
+# 生成简单统计量的数据框
 dataframe_used <-
   data.frame(
     data_used.time.keyword[-length(data_used.time.keyword)],
-    as.character.Date(c(data_used$time[data_used.timeRange.index[-c(1,length(data_used.time.keyword))]-1],data_used.time.keyword[length(data_used.time.keyword)])),
+    as.character.Date(c(
+      data_used$time[data_used.timeRange.index[-c(1, length(data_used.time.keyword))] -
+                       1], data_used.time.keyword[length(data_used.time.keyword)]
+    )),
     as.numeric(data_used.mean),
     as.numeric(data_used.variance),
     as.numeric(data_used.gradient.mean),
@@ -418,13 +545,23 @@ names(dataframe_used) <-
     '日变化率均值',
     '日变化率标准差')
 
-
 # 写出数据到指定表格的指定位置
 output_data.data_type <- "数据指标结果"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+output_data.file_name <-
+  paste(
+    "金砖四国",
+    output_data.data_name,
+    output_data.data_type,
+    "_",
+    input_data.data_source_name,
+    "_",
+    output_data.project_name,
+    ".xlsx",
+    sep = ''
+  )
 xlsx::write.xlsx2(
   dataframe_used,
-  file = paste(data_path,output_data.file_name,sep='/'),
+  file = paste(data_path, output_data.file_name, sep = '/'),
   sheetName = output_data.sheet_name,
   append = TRUE
 )
@@ -436,7 +573,7 @@ xlsx::write.xlsx2(
 #   file = paste(data_path,output_data.file_name,sep='/'),
 #                   sheetName = output_data.sheet_name,
 #                   append = TRUE)
-# 
+#
 # output_data.data_type <- "差分数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(
@@ -445,7 +582,7 @@ xlsx::write.xlsx2(
 #   sheetName = output_data.sheet_name,
 #   append = TRUE
 # )
-# 
+#
 # output_data.data_type <- "日变化率数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(
@@ -454,6 +591,45 @@ xlsx::write.xlsx2(
 #   sheetName = output_data.sheet_name,
 #   append = TRUE
 # )
+
+
+# 生成判断是否随机游走的数据框
+
+data_used.RandomWalk.summary.coefficients_dataframe <- lapply(lapply(X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],FUN = t),FUN = as.vector) %>% unlist %>% matrix(ncol = 8,byrow = TRUE) %>% data.frame()
+
+names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
+  'beta 0',
+  'Std. Error of beta 0',
+  't-value of beta 0',
+  'Pr(>|t|) of beta 0',
+  'beta 1',
+  'Std. Error of beta 1',
+  't-value of beta 1',
+  'Pr(>|t|) of beta 1'
+)
+
+# 写出数据到指定表格的指定位置
+output_data.data_type <- "判断随机游走"
+output_data.file_name <-
+  paste(
+    "金砖四国",
+    output_data.data_name,
+    output_data.data_type,
+    "_",
+    input_data.data_source_name,
+    "_",
+    output_data.project_name,
+    ".xlsx",
+    sep = ''
+  )
+xlsx::write.xlsx2(
+  data_used.RandomWalk.summary.coefficients_dataframe,
+  file = paste(data_path, output_data.file_name, sep = '/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
+
+
 
 
 
@@ -472,11 +648,12 @@ input_sheet_name <- "俄罗斯日度数据"
 
 # 提取需要的区间段
 data_time_keyword <-
-  as.character(c('1992-07-01',
-                 '1995-07-06',
-                 '1998-08-17',
-                 '2014-11-10',
-                 '2018-12-31'
+  as.character(c(
+    '1992-07-01',
+    '1995-07-06',
+    '1998-08-17',
+    '2014-11-10',
+    '2018-12-31'
   ))
 
 # 输出的数据的数据表名称
@@ -563,6 +740,19 @@ data_used.rate_of_change.mean <-
 # 变化率样本数据的标准差
 data_used.rate_of_change.variance <-
   array(dim = length(data_used.time.keyword) - 1)
+# ACF、PACF、自动化ARMA的变量定义
+data_used.acf <- list()
+data_used.pacf <- list()
+data_used.gradient.acf <- list()
+data_used.gradient.pacf <- list()
+data_used.autoARMA <- list()
+data_used.gradient.autoARMA <- list()
+data_used.RandomWalk <-
+  list(lm = list(),
+       summary = list(),
+       confint = list())
+
+
 
 # for (i in 1:length(data_used.time.keyword) - 1) {
 #   i
@@ -587,31 +777,61 @@ data_used.rate_of_change.variance <-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                    1] - 1)],na.rm = FALSE)
+    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.variance[j] <-
     sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                   1] - 1)],na.rm = FALSE)
+                                                                                  1] - 1)], na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
     mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
-                                                                                                                   1] - 1)],na.rm = FALSE)
+                                                                                                                   1] - 1)], na.rm = FALSE)
   data_used.gradient.variance[j] <-
     sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
-                                   1):(data_used.gradient.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
     mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
     sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                         1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+  
+  # ARMA模型
+  # 自相关性和偏相关性检验
+  data_used.acf[[j]] <-
+    acf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.acf[[j]]
+  data_used.pacf[[j]] <-
+    pacf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.pacf[[j]]
+  # 自动化ARMA模型
+  data_used.autoARMA[[j]] <-
+    forecast::auto.arima(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.autoARMA[[j]]
+  # 判别是否符合随机游走
+  data_used.RandomWalk$lm[[j]] <-
+    lm(formula = data_used$data ~ stats::lag(x = data_used$data, 1))
+  data_used.RandomWalk$lm[[j]]
+  data_used.RandomWalk$summary[[j]] <-
+    summary(data_used.RandomWalk$lm[[j]])
+  data_used.RandomWalk$summary[[j]]
+  data_used.RandomWalk$confint[[j]] <-
+    confint(data_used.RandomWalk$lm[[j]])
+  data_used.RandomWalk$confint[[j]]
+  
+  
+  
   j = j + 1
 }
 
+
+# 生成简单统计量的数据框
 dataframe_used <-
   data.frame(
     data_used.time.keyword[-length(data_used.time.keyword)],
-    as.character.Date(c(data_used$time[data_used.timeRange.index[-c(1,length(data_used.time.keyword))]-1],data_used.time.keyword[length(data_used.time.keyword)])),
+    as.character.Date(c(
+      data_used$time[data_used.timeRange.index[-c(1, length(data_used.time.keyword))] -
+                       1], data_used.time.keyword[length(data_used.time.keyword)]
+    )),
     as.numeric(data_used.mean),
     as.numeric(data_used.variance),
     as.numeric(data_used.gradient.mean),
@@ -629,13 +849,23 @@ names(dataframe_used) <-
     '日变化率均值',
     '日变化率标准差')
 
-
 # 写出数据到指定表格的指定位置
 output_data.data_type <- "数据指标结果"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+output_data.file_name <-
+  paste(
+    "金砖四国",
+    output_data.data_name,
+    output_data.data_type,
+    "_",
+    input_data.data_source_name,
+    "_",
+    output_data.project_name,
+    ".xlsx",
+    sep = ''
+  )
 xlsx::write.xlsx2(
   dataframe_used,
-  file = paste(data_path,output_data.file_name,sep='/'),
+  file = paste(data_path, output_data.file_name, sep = '/'),
   sheetName = output_data.sheet_name,
   append = TRUE
 )
@@ -647,7 +877,7 @@ xlsx::write.xlsx2(
 #   file = paste(data_path,output_data.file_name,sep='/'),
 #                   sheetName = output_data.sheet_name,
 #                   append = TRUE)
-# 
+#
 # output_data.data_type <- "差分数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(
@@ -656,7 +886,7 @@ xlsx::write.xlsx2(
 #   sheetName = output_data.sheet_name,
 #   append = TRUE
 # )
-# 
+#
 # output_data.data_type <- "日变化率数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(
@@ -666,6 +896,42 @@ xlsx::write.xlsx2(
 #   append = TRUE
 # )
 
+
+# 生成判断是否随机游走的数据框
+
+data_used.RandomWalk.summary.coefficients_dataframe <- lapply(lapply(X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],FUN = t),FUN = as.vector) %>% unlist %>% matrix(ncol = 8,byrow = TRUE) %>% data.frame()
+
+names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
+  'beta 0',
+  'Std. Error of beta 0',
+  't-value of beta 0',
+  'Pr(>|t|) of beta 0',
+  'beta 1',
+  'Std. Error of beta 1',
+  't-value of beta 1',
+  'Pr(>|t|) of beta 1'
+)
+
+# 写出数据到指定表格的指定位置
+output_data.data_type <- "判断随机游走"
+output_data.file_name <-
+  paste(
+    "金砖四国",
+    output_data.data_name,
+    output_data.data_type,
+    "_",
+    input_data.data_source_name,
+    "_",
+    output_data.project_name,
+    ".xlsx",
+    sep = ''
+  )
+xlsx::write.xlsx2(
+  data_used.RandomWalk.summary.coefficients_dataframe,
+  file = paste(data_path, output_data.file_name, sep = '/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
 
 
 
@@ -681,17 +947,19 @@ input_sheet_name <- "巴西日度数据"
 
 # 提取需要的区间段
 data_time_keyword <-
-  as.character(c(
-                 '1984-12-03',
-                 '1991-10-01',
-                 '1994-07-01',
-                 '1999-02-01',
-                 '2002-10-25',
-                 '2008-08-05',
-                 '2009-10-19',
-                 '2015-09-25',
-                 '2018-12-31'
-  ))
+  as.character(
+    c(
+      '1984-12-03',
+      '1991-10-01',
+      '1994-07-01',
+      '1999-02-01',
+      '2002-10-25',
+      '2008-08-05',
+      '2009-10-19',
+      '2015-09-25',
+      '2018-12-31'
+    )
+  )
 
 # 输出的数据的数据表名称
 output_sheet_name <- "巴西"
@@ -777,6 +1045,19 @@ data_used.rate_of_change.mean <-
 # 变化率样本数据的标准差
 data_used.rate_of_change.variance <-
   array(dim = length(data_used.time.keyword) - 1)
+# ACF、PACF、自动化ARMA的变量定义
+data_used.acf <- list()
+data_used.pacf <- list()
+data_used.gradient.acf <- list()
+data_used.gradient.pacf <- list()
+data_used.autoARMA <- list()
+data_used.gradient.autoARMA <- list()
+data_used.RandomWalk <-
+  list(lm = list(),
+       summary = list(),
+       confint = list())
+
+
 
 # for (i in 1:length(data_used.time.keyword) - 1) {
 #   i
@@ -801,31 +1082,61 @@ data_used.rate_of_change.variance <-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                    1] - 1)],na.rm = FALSE)
+    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.variance[j] <-
     sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                   1] - 1)],na.rm = FALSE)
+                                                                                  1] - 1)], na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
     mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
-                                                                                                                   1] - 1)],na.rm = FALSE)
+                                                                                                                   1] - 1)], na.rm = FALSE)
   data_used.gradient.variance[j] <-
     sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
-                                   1):(data_used.gradient.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
     mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
     sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                         1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)],na.rm = FALSE)
+                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+  
+  # ARMA模型
+  # 自相关性和偏相关性检验
+  data_used.acf[[j]] <-
+    acf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.acf[[j]]
+  data_used.pacf[[j]] <-
+    pacf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.pacf[[j]]
+  # 自动化ARMA模型
+  data_used.autoARMA[[j]] <-
+    forecast::auto.arima(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.autoARMA[[j]]
+  # 判别是否符合随机游走
+  data_used.RandomWalk$lm[[j]] <-
+    lm(formula = data_used$data ~ stats::lag(x = data_used$data, 1))
+  data_used.RandomWalk$lm[[j]]
+  data_used.RandomWalk$summary[[j]] <-
+    summary(data_used.RandomWalk$lm[[j]])
+  data_used.RandomWalk$summary[[j]]
+  data_used.RandomWalk$confint[[j]] <-
+    confint(data_used.RandomWalk$lm[[j]])
+  data_used.RandomWalk$confint[[j]]
+  
+  
+  
   j = j + 1
 }
 
+
+# 生成简单统计量的数据框
 dataframe_used <-
   data.frame(
     data_used.time.keyword[-length(data_used.time.keyword)],
-    as.character.Date(c(data_used$time[data_used.timeRange.index[-c(1,length(data_used.time.keyword))]-1],data_used.time.keyword[length(data_used.time.keyword)])),
+    as.character.Date(c(
+      data_used$time[data_used.timeRange.index[-c(1, length(data_used.time.keyword))] -
+                       1], data_used.time.keyword[length(data_used.time.keyword)]
+    )),
     as.numeric(data_used.mean),
     as.numeric(data_used.variance),
     as.numeric(data_used.gradient.mean),
@@ -843,13 +1154,23 @@ names(dataframe_used) <-
     '日变化率均值',
     '日变化率标准差')
 
-
 # 写出数据到指定表格的指定位置
 output_data.data_type <- "数据指标结果"
-output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
+output_data.file_name <-
+  paste(
+    "金砖四国",
+    output_data.data_name,
+    output_data.data_type,
+    "_",
+    input_data.data_source_name,
+    "_",
+    output_data.project_name,
+    ".xlsx",
+    sep = ''
+  )
 xlsx::write.xlsx2(
   dataframe_used,
-  file = paste(data_path,output_data.file_name,sep='/'),
+  file = paste(data_path, output_data.file_name, sep = '/'),
   sheetName = output_data.sheet_name,
   append = TRUE
 )
@@ -861,7 +1182,7 @@ xlsx::write.xlsx2(
 #   file = paste(data_path,output_data.file_name,sep='/'),
 #                   sheetName = output_data.sheet_name,
 #                   append = TRUE)
-# 
+#
 # output_data.data_type <- "差分数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(
@@ -870,7 +1191,7 @@ xlsx::write.xlsx2(
 #   sheetName = output_data.sheet_name,
 #   append = TRUE
 # )
-# 
+#
 # output_data.data_type <- "日变化率数据"
 # output_data.file_name <- paste("金砖四国",output_data.data_name,output_data.data_type,"_",input_data.data_source_name,"_",output_data.project_name,".xlsx",sep = '')
 # xlsx::write.xlsx2(
@@ -881,12 +1202,41 @@ xlsx::write.xlsx2(
 # )
 
 
+# 生成判断是否随机游走的数据框
 
+data_used.RandomWalk.summary.coefficients_dataframe <- lapply(lapply(X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],FUN = t),FUN = as.vector) %>% unlist %>% matrix(ncol = 8,byrow = TRUE) %>% data.frame()
 
+names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
+  'beta 0',
+  'Std. Error of beta 0',
+  't-value of beta 0',
+  'Pr(>|t|) of beta 0',
+  'beta 1',
+  'Std. Error of beta 1',
+  't-value of beta 1',
+  'Pr(>|t|) of beta 1'
+)
 
-
-
-
+# 写出数据到指定表格的指定位置
+output_data.data_type <- "判断随机游走"
+output_data.file_name <-
+  paste(
+    "金砖四国",
+    output_data.data_name,
+    output_data.data_type,
+    "_",
+    input_data.data_source_name,
+    "_",
+    output_data.project_name,
+    ".xlsx",
+    sep = ''
+  )
+xlsx::write.xlsx2(
+  data_used.RandomWalk.summary.coefficients_dataframe,
+  file = paste(data_path, output_data.file_name, sep = '/'),
+  sheetName = output_data.sheet_name,
+  append = TRUE
+)
 
 
 
