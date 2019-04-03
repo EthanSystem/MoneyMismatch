@@ -1402,7 +1402,6 @@ output_data.data_type <- "判断随机游走"
 output_data.file_name <-
   paste(
     "金砖四国",
-    "_",
     output_data.data_name,
     output_data.data_type,
     "_",
