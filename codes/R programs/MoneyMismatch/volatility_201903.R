@@ -3,6 +3,10 @@
 
 
 
+
+
+
+
 ##### 根据导师在3月初给的资料做划分区间进行分析 ###
 ##### 分析波动性
 
@@ -14,6 +18,7 @@ library(urca)
 library(lmtest)
 library(xlsx)
 library(forecast)
+library(tseries)
 
 root_path <- getwd()
 data_path <-
@@ -145,7 +150,7 @@ data_used.RandomWalk <-
   list(lm = list(),
        summary = list(),
        confint = list())
-
+data_used.RandomWalk.Box_test <- list()
 
 
 # for (i in 1:length(data_used.time.keyword) - 1) {
@@ -170,52 +175,83 @@ data_used.RandomWalk <-
 
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
-  data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+  data_temp <-
+    data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)]
+  data_gradient_temp <-
+    data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)]
+  data_rate_of_change_temp <-
+    data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] + 1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)]
+  
+  data_used.mean[j] <- mean(data_temp, na.rm = FALSE)
   data_used.variance[j] <-
-    sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                  1] - 1)], na.rm = FALSE)
+    sd(data_temp, na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
-    mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
-                                                                                                                   1] - 1)], na.rm = FALSE)
+    mean(data_gradient_temp, na.rm = FALSE)
   data_used.gradient.variance[j] <-
-    sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
-                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    sd(data_gradient_temp, na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
-    mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    mean(data_rate_of_change_temp, na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
-    sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    sd(data_rate_of_change_temp, na.rm = FALSE)
   
   # ARMA模型
   # 自相关性和偏相关性检验
-  data_used.acf[[j]] <-
-    acf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.acf[[j]] <- acf(data_temp)
   data_used.acf[[j]]
-  data_used.pacf[[j]] <-
-    pacf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  acf(data_temp)
+  data_used.pacf[[j]] <- pacf(data_temp)
   data_used.pacf[[j]]
+  pacf(data_temp)
+  data_used.gradient.acf[[j]] <- acf(data_gradient_temp)
+  data_used.gradient.acf[[j]]
+  acf(data_gradient_temp)
+  data_used.gradient.pacf[[j]] <- pacf(data_gradient_temp)
+  data_used.gradient.pacf[[j]]
+  pacf(data_gradient_temp)
+  
   # 自动化ARMA模型
   data_used.autoARMA[[j]] <-
-    forecast::auto.arima(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+    forecast::auto.arima(data_temp)
   data_used.autoARMA[[j]]
+  
   # 判别是否符合随机游走
-  data_used.RandomWalk$lm[[j]] <-
-    lm(formula = data_used$data ~ stats::lag(x = data_used$data, 1))
-  data_used.RandomWalk$lm[[j]]
-  data_used.RandomWalk$summary[[j]] <-
-    summary(data_used.RandomWalk$lm[[j]])
-  data_used.RandomWalk$summary[[j]]
-  data_used.RandomWalk$confint[[j]] <-
-    confint(data_used.RandomWalk$lm[[j]])
-  data_used.RandomWalk$confint[[j]]
+  
+  # # 因为存在自相关性和异方差性，因此不能直接一元线性回归模型
+  # data_used.RandomWalk$lm[[j]] <-
+  #   lm(formula = data_temp ~ stats::lag(x = data_temp, 1))
+  # data_used.RandomWalk$lm[[j]]
+  # data_used.RandomWalk$summary[[j]] <-
+  #   summary(data_used.RandomWalk$lm[[j]])
+  # data_used.RandomWalk$summary[[j]]
+  # data_used.RandomWalk$confint[[j]] <-
+  #   confint(data_used.RandomWalk$lm[[j]])
+  # data_used.RandomWalk$confint[[j]]
+  
+  
+  data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
+  # data_gradient_arima_temp <- arima(data_temp,order = c(1,1,0))
+  
+  # Ljung-Box 分析
+  Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
+  data_used.RandomWalk.Box_test[[j]]
+
+  # # 这个是用ARIMA方法做的，有误
+  # data_used.RandomWalk.Box_test[[j]] <- Box.test(residuals(data_arima_temp), type = 'Ljung-Box')
+  # data_used.RandomWalk.Box_test[[j]] <-
+
+  
+  # # ADF 分析
+  # data_used.RandomWalk.ADF_test[[j]] <- adf.test(residuals(data_arima_temp))
+  # data_used.RandomWalk.ADF_test[[j]]
+  # data_used.RandomWalk.ADF_test[[j]] <- adf.test(residuals(data_gradient_arima_temp))
+  # data_used.RandomWalk.ADF_test[[j]]
   
   
   
   j = j + 1
 }
+
 
 
 # 生成简单统计量的数据框
@@ -293,17 +329,29 @@ xlsx::write.xlsx2(
 
 # 生成判断是否随机游走的数据框
 
-data_used.RandomWalk.summary.coefficients_dataframe <- lapply(lapply(X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],FUN = t),FUN = as.vector) %>% unlist %>% matrix(ncol = 8,byrow = TRUE) %>% data.frame()
+# # 数据框1:过时了
+# data_used.RandomWalk_dataframe <-
+#   lapply(lapply(
+#     X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],
+#     FUN = t
+#   ), FUN = as.vector) %>% unlist %>% matrix(ncol = 8, byrow = TRUE) %>% data.frame()
+#
+# names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
+#   'beta 0',
+#   'Std. Error of beta 0',
+#   't-value of beta 0',
+#   'Pr(>|t|) of beta 0',
+#   'beta 1',
+#   'Std. Error of beta 1',
+#   't-value of beta 1',
+#   'Pr(>|t|) of beta 1'
+# )
 
-names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
-  'beta 0',
-  'Std. Error of beta 0',
-  't-value of beta 0',
-  'Pr(>|t|) of beta 0',
-  'beta 1',
-  'Std. Error of beta 1',
-  't-value of beta 1',
-  'Pr(>|t|) of beta 1'
+# 数据框2:
+data_used.RandomWalk_dataframe <- (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% data.frame()
+
+names(data_used.RandomWalk_dataframe) <- c(
+  'Ljung-Box p值'
 )
 
 # 写出数据到指定表格的指定位置
@@ -311,6 +359,7 @@ output_data.data_type <- "判断随机游走"
 output_data.file_name <-
   paste(
     "金砖四国",
+    "_",
     output_data.data_name,
     output_data.data_type,
     "_",
@@ -321,7 +370,7 @@ output_data.file_name <-
     sep = ''
   )
 xlsx::write.xlsx2(
-  data_used.RandomWalk.summary.coefficients_dataframe,
+  data_used.RandomWalk_dataframe,
   file = paste(data_path, output_data.file_name, sep = '/'),
   sheetName = output_data.sheet_name,
   append = TRUE
@@ -375,6 +424,7 @@ data_used <- subset(data_original,
                     data != 'NaN')
 data_used <- subset(data_used, data != '')
 
+
 # 调整日期的格式
 data_used$time <- as.character.Date(data_used$time)
 
@@ -447,7 +497,7 @@ data_used.RandomWalk <-
   list(lm = list(),
        summary = list(),
        confint = list())
-
+data_used.RandomWalk.Box_test <- list()
 
 
 # for (i in 1:length(data_used.time.keyword) - 1) {
@@ -472,52 +522,83 @@ data_used.RandomWalk <-
 
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
-  data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+  data_temp <-
+    data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)]
+  data_gradient_temp <-
+    data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)]
+  data_rate_of_change_temp <-
+    data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] + 1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)]
+  
+  data_used.mean[j] <- mean(data_temp, na.rm = FALSE)
   data_used.variance[j] <-
-    sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                  1] - 1)], na.rm = FALSE)
+    sd(data_temp, na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
-    mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
-                                                                                                                   1] - 1)], na.rm = FALSE)
+    mean(data_gradient_temp, na.rm = FALSE)
   data_used.gradient.variance[j] <-
-    sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
-                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    sd(data_gradient_temp, na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
-    mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    mean(data_rate_of_change_temp, na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
-    sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    sd(data_rate_of_change_temp, na.rm = FALSE)
   
   # ARMA模型
   # 自相关性和偏相关性检验
-  data_used.acf[[j]] <-
-    acf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.acf[[j]] <- acf(data_temp)
   data_used.acf[[j]]
-  data_used.pacf[[j]] <-
-    pacf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  acf(data_temp)
+  data_used.pacf[[j]] <- pacf(data_temp)
   data_used.pacf[[j]]
+  pacf(data_temp)
+  data_used.gradient.acf[[j]] <- acf(data_gradient_temp)
+  data_used.gradient.acf[[j]]
+  acf(data_gradient_temp)
+  data_used.gradient.pacf[[j]] <- pacf(data_gradient_temp)
+  data_used.gradient.pacf[[j]]
+  pacf(data_gradient_temp)
+  
   # 自动化ARMA模型
   data_used.autoARMA[[j]] <-
-    forecast::auto.arima(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+    forecast::auto.arima(data_temp)
   data_used.autoARMA[[j]]
+  
   # 判别是否符合随机游走
-  data_used.RandomWalk$lm[[j]] <-
-    lm(formula = data_used$data ~ stats::lag(x = data_used$data, 1))
-  data_used.RandomWalk$lm[[j]]
-  data_used.RandomWalk$summary[[j]] <-
-    summary(data_used.RandomWalk$lm[[j]])
-  data_used.RandomWalk$summary[[j]]
-  data_used.RandomWalk$confint[[j]] <-
-    confint(data_used.RandomWalk$lm[[j]])
-  data_used.RandomWalk$confint[[j]]
+  
+  # # 因为存在自相关性和异方差性，因此不能直接一元线性回归模型
+  # data_used.RandomWalk$lm[[j]] <-
+  #   lm(formula = data_temp ~ stats::lag(x = data_temp, 1))
+  # data_used.RandomWalk$lm[[j]]
+  # data_used.RandomWalk$summary[[j]] <-
+  #   summary(data_used.RandomWalk$lm[[j]])
+  # data_used.RandomWalk$summary[[j]]
+  # data_used.RandomWalk$confint[[j]] <-
+  #   confint(data_used.RandomWalk$lm[[j]])
+  # data_used.RandomWalk$confint[[j]]
+  
+  
+  data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
+  # data_gradient_arima_temp <- arima(data_temp,order = c(1,1,0))
+  
+  # Ljung-Box 分析
+  Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
+  data_used.RandomWalk.Box_test[[j]]
+
+  # # 这个是用ARIMA方法做的，有误
+  # data_used.RandomWalk.Box_test[[j]] <- Box.test(residuals(data_arima_temp), type = 'Ljung-Box')
+  # data_used.RandomWalk.Box_test[[j]] <-
+
+  
+  # # ADF 分析
+  # data_used.RandomWalk.ADF_test[[j]] <- adf.test(residuals(data_arima_temp))
+  # data_used.RandomWalk.ADF_test[[j]]
+  # data_used.RandomWalk.ADF_test[[j]] <- adf.test(residuals(data_gradient_arima_temp))
+  # data_used.RandomWalk.ADF_test[[j]]
   
   
   
   j = j + 1
 }
+
 
 
 # 生成简单统计量的数据框
@@ -595,17 +676,29 @@ xlsx::write.xlsx2(
 
 # 生成判断是否随机游走的数据框
 
-data_used.RandomWalk.summary.coefficients_dataframe <- lapply(lapply(X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],FUN = t),FUN = as.vector) %>% unlist %>% matrix(ncol = 8,byrow = TRUE) %>% data.frame()
+# # 数据框1:过时了
+# data_used.RandomWalk_dataframe <-
+#   lapply(lapply(
+#     X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],
+#     FUN = t
+#   ), FUN = as.vector) %>% unlist %>% matrix(ncol = 8, byrow = TRUE) %>% data.frame()
+#
+# names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
+#   'beta 0',
+#   'Std. Error of beta 0',
+#   't-value of beta 0',
+#   'Pr(>|t|) of beta 0',
+#   'beta 1',
+#   'Std. Error of beta 1',
+#   't-value of beta 1',
+#   'Pr(>|t|) of beta 1'
+# )
 
-names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
-  'beta 0',
-  'Std. Error of beta 0',
-  't-value of beta 0',
-  'Pr(>|t|) of beta 0',
-  'beta 1',
-  'Std. Error of beta 1',
-  't-value of beta 1',
-  'Pr(>|t|) of beta 1'
+# 数据框2:
+data_used.RandomWalk_dataframe <- (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% data.frame()
+
+names(data_used.RandomWalk_dataframe) <- c(
+  'Ljung-Box p值'
 )
 
 # 写出数据到指定表格的指定位置
@@ -613,6 +706,7 @@ output_data.data_type <- "判断随机游走"
 output_data.file_name <-
   paste(
     "金砖四国",
+    "_",
     output_data.data_name,
     output_data.data_type,
     "_",
@@ -623,13 +717,11 @@ output_data.file_name <-
     sep = ''
   )
 xlsx::write.xlsx2(
-  data_used.RandomWalk.summary.coefficients_dataframe,
+  data_used.RandomWalk_dataframe,
   file = paste(data_path, output_data.file_name, sep = '/'),
   sheetName = output_data.sheet_name,
   append = TRUE
 )
-
-
 
 
 
@@ -679,6 +771,7 @@ data_used <- subset(data_original,
                     data != 'NaN')
 data_used <- subset(data_used, data != '')
 
+
 # 调整日期的格式
 data_used$time <- as.character.Date(data_used$time)
 
@@ -751,7 +844,7 @@ data_used.RandomWalk <-
   list(lm = list(),
        summary = list(),
        confint = list())
-
+data_used.RandomWalk.Box_test <- list()
 
 
 # for (i in 1:length(data_used.time.keyword) - 1) {
@@ -776,52 +869,83 @@ data_used.RandomWalk <-
 
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
-  data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+  data_temp <-
+    data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)]
+  data_gradient_temp <-
+    data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)]
+  data_rate_of_change_temp <-
+    data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] + 1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)]
+  
+  data_used.mean[j] <- mean(data_temp, na.rm = FALSE)
   data_used.variance[j] <-
-    sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                  1] - 1)], na.rm = FALSE)
+    sd(data_temp, na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
-    mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
-                                                                                                                   1] - 1)], na.rm = FALSE)
+    mean(data_gradient_temp, na.rm = FALSE)
   data_used.gradient.variance[j] <-
-    sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
-                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    sd(data_gradient_temp, na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
-    mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    mean(data_rate_of_change_temp, na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
-    sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    sd(data_rate_of_change_temp, na.rm = FALSE)
   
   # ARMA模型
   # 自相关性和偏相关性检验
-  data_used.acf[[j]] <-
-    acf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.acf[[j]] <- acf(data_temp)
   data_used.acf[[j]]
-  data_used.pacf[[j]] <-
-    pacf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  acf(data_temp)
+  data_used.pacf[[j]] <- pacf(data_temp)
   data_used.pacf[[j]]
+  pacf(data_temp)
+  data_used.gradient.acf[[j]] <- acf(data_gradient_temp)
+  data_used.gradient.acf[[j]]
+  acf(data_gradient_temp)
+  data_used.gradient.pacf[[j]] <- pacf(data_gradient_temp)
+  data_used.gradient.pacf[[j]]
+  pacf(data_gradient_temp)
+  
   # 自动化ARMA模型
   data_used.autoARMA[[j]] <-
-    forecast::auto.arima(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+    forecast::auto.arima(data_temp)
   data_used.autoARMA[[j]]
+  
   # 判别是否符合随机游走
-  data_used.RandomWalk$lm[[j]] <-
-    lm(formula = data_used$data ~ stats::lag(x = data_used$data, 1))
-  data_used.RandomWalk$lm[[j]]
-  data_used.RandomWalk$summary[[j]] <-
-    summary(data_used.RandomWalk$lm[[j]])
-  data_used.RandomWalk$summary[[j]]
-  data_used.RandomWalk$confint[[j]] <-
-    confint(data_used.RandomWalk$lm[[j]])
-  data_used.RandomWalk$confint[[j]]
+  
+  # # 因为存在自相关性和异方差性，因此不能直接一元线性回归模型
+  # data_used.RandomWalk$lm[[j]] <-
+  #   lm(formula = data_temp ~ stats::lag(x = data_temp, 1))
+  # data_used.RandomWalk$lm[[j]]
+  # data_used.RandomWalk$summary[[j]] <-
+  #   summary(data_used.RandomWalk$lm[[j]])
+  # data_used.RandomWalk$summary[[j]]
+  # data_used.RandomWalk$confint[[j]] <-
+  #   confint(data_used.RandomWalk$lm[[j]])
+  # data_used.RandomWalk$confint[[j]]
+  
+  
+  data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
+  # data_gradient_arima_temp <- arima(data_temp,order = c(1,1,0))
+  
+  # Ljung-Box 分析
+  Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
+  data_used.RandomWalk.Box_test[[j]]
+
+  # # 这个是用ARIMA方法做的，有误
+  # data_used.RandomWalk.Box_test[[j]] <- Box.test(residuals(data_arima_temp), type = 'Ljung-Box')
+  # data_used.RandomWalk.Box_test[[j]] <-
+
+  
+  # # ADF 分析
+  # data_used.RandomWalk.ADF_test[[j]] <- adf.test(residuals(data_arima_temp))
+  # data_used.RandomWalk.ADF_test[[j]]
+  # data_used.RandomWalk.ADF_test[[j]] <- adf.test(residuals(data_gradient_arima_temp))
+  # data_used.RandomWalk.ADF_test[[j]]
   
   
   
   j = j + 1
 }
+
 
 
 # 生成简单统计量的数据框
@@ -899,17 +1023,29 @@ xlsx::write.xlsx2(
 
 # 生成判断是否随机游走的数据框
 
-data_used.RandomWalk.summary.coefficients_dataframe <- lapply(lapply(X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],FUN = t),FUN = as.vector) %>% unlist %>% matrix(ncol = 8,byrow = TRUE) %>% data.frame()
+# # 数据框1:过时了
+# data_used.RandomWalk_dataframe <-
+#   lapply(lapply(
+#     X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],
+#     FUN = t
+#   ), FUN = as.vector) %>% unlist %>% matrix(ncol = 8, byrow = TRUE) %>% data.frame()
+#
+# names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
+#   'beta 0',
+#   'Std. Error of beta 0',
+#   't-value of beta 0',
+#   'Pr(>|t|) of beta 0',
+#   'beta 1',
+#   'Std. Error of beta 1',
+#   't-value of beta 1',
+#   'Pr(>|t|) of beta 1'
+# )
 
-names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
-  'beta 0',
-  'Std. Error of beta 0',
-  't-value of beta 0',
-  'Pr(>|t|) of beta 0',
-  'beta 1',
-  'Std. Error of beta 1',
-  't-value of beta 1',
-  'Pr(>|t|) of beta 1'
+# 数据框2:
+data_used.RandomWalk_dataframe <- (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% data.frame()
+
+names(data_used.RandomWalk_dataframe) <- c(
+  'Ljung-Box p值'
 )
 
 # 写出数据到指定表格的指定位置
@@ -917,6 +1053,7 @@ output_data.data_type <- "判断随机游走"
 output_data.file_name <-
   paste(
     "金砖四国",
+    "_",
     output_data.data_name,
     output_data.data_type,
     "_",
@@ -927,12 +1064,11 @@ output_data.file_name <-
     sep = ''
   )
 xlsx::write.xlsx2(
-  data_used.RandomWalk.summary.coefficients_dataframe,
+  data_used.RandomWalk_dataframe,
   file = paste(data_path, output_data.file_name, sep = '/'),
   sheetName = output_data.sheet_name,
   append = TRUE
 )
-
 
 
 
@@ -984,6 +1120,7 @@ data_used <- subset(data_original,
                     data != 'NaN')
 data_used <- subset(data_used, data != '')
 
+
 # 调整日期的格式
 data_used$time <- as.character.Date(data_used$time)
 
@@ -1056,7 +1193,7 @@ data_used.RandomWalk <-
   list(lm = list(),
        summary = list(),
        confint = list())
-
+data_used.RandomWalk.Box_test <- list()
 
 
 # for (i in 1:length(data_used.time.keyword) - 1) {
@@ -1081,52 +1218,83 @@ data_used.RandomWalk <-
 
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
-  data_used.mean[j] <-
-    mean(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+  data_temp <-
+    data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j + 1] - 1)]
+  data_gradient_temp <-
+    data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)]
+  data_rate_of_change_temp <-
+    data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] + 1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)]
+  
+  data_used.mean[j] <- mean(data_temp, na.rm = FALSE)
   data_used.variance[j] <-
-    sd(data_used$data[(data_used.timeRange.index[j]):(data_used.timeRange.index[j +
-                                                                                  1] - 1)], na.rm = FALSE)
+    sd(data_temp, na.rm = FALSE)
   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
   data_used.gradient.mean[j] <-
-    mean(data_used.gradient$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j +
-                                                                                                                   1] - 1)], na.rm = FALSE)
+    mean(data_gradient_temp, na.rm = FALSE)
   data_used.gradient.variance[j] <-
-    sd(data_used.gradient$data[(data_used.gradient.timeRange.index[j] +
-                                  1):(data_used.gradient.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    sd(data_gradient_temp, na.rm = FALSE)
   data_used.rate_of_change.mean[j] <-
-    mean(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                          1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    mean(data_rate_of_change_temp, na.rm = FALSE)
   data_used.rate_of_change.variance[j] <-
-    sd(data_used.rate_of_change$data[(data_used.rate_of_change.timeRange.index[j] +
-                                        1):(data_used.rate_of_change.timeRange.index[j + 1] - 1)], na.rm = FALSE)
+    sd(data_rate_of_change_temp, na.rm = FALSE)
   
   # ARMA模型
   # 自相关性和偏相关性检验
-  data_used.acf[[j]] <-
-    acf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  data_used.acf[[j]] <- acf(data_temp)
   data_used.acf[[j]]
-  data_used.pacf[[j]] <-
-    pacf(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+  acf(data_temp)
+  data_used.pacf[[j]] <- pacf(data_temp)
   data_used.pacf[[j]]
+  pacf(data_temp)
+  data_used.gradient.acf[[j]] <- acf(data_gradient_temp)
+  data_used.gradient.acf[[j]]
+  acf(data_gradient_temp)
+  data_used.gradient.pacf[[j]] <- pacf(data_gradient_temp)
+  data_used.gradient.pacf[[j]]
+  pacf(data_gradient_temp)
+  
   # 自动化ARMA模型
   data_used.autoARMA[[j]] <-
-    forecast::auto.arima(data_used$data[(data_used.gradient.timeRange.index[j] + 1):(data_used.gradient.timeRange.index[j + 1] - 1)])
+    forecast::auto.arima(data_temp)
   data_used.autoARMA[[j]]
+  
   # 判别是否符合随机游走
-  data_used.RandomWalk$lm[[j]] <-
-    lm(formula = data_used$data ~ stats::lag(x = data_used$data, 1))
-  data_used.RandomWalk$lm[[j]]
-  data_used.RandomWalk$summary[[j]] <-
-    summary(data_used.RandomWalk$lm[[j]])
-  data_used.RandomWalk$summary[[j]]
-  data_used.RandomWalk$confint[[j]] <-
-    confint(data_used.RandomWalk$lm[[j]])
-  data_used.RandomWalk$confint[[j]]
+  
+  # # 因为存在自相关性和异方差性，因此不能直接一元线性回归模型
+  # data_used.RandomWalk$lm[[j]] <-
+  #   lm(formula = data_temp ~ stats::lag(x = data_temp, 1))
+  # data_used.RandomWalk$lm[[j]]
+  # data_used.RandomWalk$summary[[j]] <-
+  #   summary(data_used.RandomWalk$lm[[j]])
+  # data_used.RandomWalk$summary[[j]]
+  # data_used.RandomWalk$confint[[j]] <-
+  #   confint(data_used.RandomWalk$lm[[j]])
+  # data_used.RandomWalk$confint[[j]]
+  
+  
+  data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
+  # data_gradient_arima_temp <- arima(data_temp,order = c(1,1,0))
+  
+  # Ljung-Box 分析
+  Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
+  data_used.RandomWalk.Box_test[[j]]
+
+  # # 这个是用ARIMA方法做的，有误
+  # data_used.RandomWalk.Box_test[[j]] <- Box.test(residuals(data_arima_temp), type = 'Ljung-Box')
+  # data_used.RandomWalk.Box_test[[j]] <-
+
+  
+  # # ADF 分析
+  # data_used.RandomWalk.ADF_test[[j]] <- adf.test(residuals(data_arima_temp))
+  # data_used.RandomWalk.ADF_test[[j]]
+  # data_used.RandomWalk.ADF_test[[j]] <- adf.test(residuals(data_gradient_arima_temp))
+  # data_used.RandomWalk.ADF_test[[j]]
   
   
   
   j = j + 1
 }
+
 
 
 # 生成简单统计量的数据框
@@ -1204,17 +1372,29 @@ xlsx::write.xlsx2(
 
 # 生成判断是否随机游走的数据框
 
-data_used.RandomWalk.summary.coefficients_dataframe <- lapply(lapply(X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],FUN = t),FUN = as.vector) %>% unlist %>% matrix(ncol = 8,byrow = TRUE) %>% data.frame()
+# # 数据框1:过时了
+# data_used.RandomWalk_dataframe <-
+#   lapply(lapply(
+#     X = (data_used.RandomWalk$summary %>% transpose)[['coefficients']],
+#     FUN = t
+#   ), FUN = as.vector) %>% unlist %>% matrix(ncol = 8, byrow = TRUE) %>% data.frame()
+#
+# names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
+#   'beta 0',
+#   'Std. Error of beta 0',
+#   't-value of beta 0',
+#   'Pr(>|t|) of beta 0',
+#   'beta 1',
+#   'Std. Error of beta 1',
+#   't-value of beta 1',
+#   'Pr(>|t|) of beta 1'
+# )
 
-names(data_used.RandomWalk.summary.coefficients_dataframe) <- c(
-  'beta 0',
-  'Std. Error of beta 0',
-  't-value of beta 0',
-  'Pr(>|t|) of beta 0',
-  'beta 1',
-  'Std. Error of beta 1',
-  't-value of beta 1',
-  'Pr(>|t|) of beta 1'
+# 数据框2:
+data_used.RandomWalk_dataframe <- (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% data.frame()
+
+names(data_used.RandomWalk_dataframe) <- c(
+  'Ljung-Box p值'
 )
 
 # 写出数据到指定表格的指定位置
@@ -1222,6 +1402,7 @@ output_data.data_type <- "判断随机游走"
 output_data.file_name <-
   paste(
     "金砖四国",
+    "_",
     output_data.data_name,
     output_data.data_type,
     "_",
@@ -1232,12 +1413,9 @@ output_data.file_name <-
     sep = ''
   )
 xlsx::write.xlsx2(
-  data_used.RandomWalk.summary.coefficients_dataframe,
+  data_used.RandomWalk_dataframe,
   file = paste(data_path, output_data.file_name, sep = '/'),
   sheetName = output_data.sheet_name,
   append = TRUE
 )
-
-
-
 
