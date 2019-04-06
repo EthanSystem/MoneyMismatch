@@ -40,15 +40,24 @@ output_data.project_name <- "自动生成的"
 
 input_sheet_name <- "中国日度数据"
 
-# 提取需要的区间段
+# # 提取需要的区间段1
+# data_time_keyword <-
+#   as.character(
+#     c(
+#       '1981-01-02',
+#       '1994-01-03',
+#       '2005-07-21',
+#       '2010-06-21',
+#       '2015-08-11',
+#       '2018-12-31'
+#     )
+#   )
+
+# 提取需要的区间段2
 data_time_keyword <-
   as.character(
     c(
-      '1981-01-02',
       '1994-01-03',
-      '2005-07-21',
-      '2010-06-21',
-      '2015-08-11',
       '2018-12-31'
     )
   )
@@ -153,26 +162,6 @@ data_used.RandomWalk <-
 data_used.RandomWalk.Box_test <- list()
 
 
-# for (i in 1:length(data_used.time.keyword) - 1) {
-#   i
-#   data_used.mean[i] <-
-#     mean(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
-#   data_used.variance[i] <-
-#     sd(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
-#   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
-#   data_used.gradient.mean[i] <-
-#     mean(data_used.gradient$data[data_used.gradient.timeRange.index[i]+1:data_used.gradient.timeRange.index[i+1]-1])
-#   data_used.gradient.variance[i] <-
-#     sd(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
-#                                   1:data_used.gradient.timeRange.index[i + 1] - 1])
-#   data_used.rate_of_change.mean[i] <-
-#     mean(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
-#                                          1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
-#   data_used.rate_of_change.variance[i] <-
-#     sd(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
-#                                         1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
-# }
-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_temp <-
@@ -229,16 +218,16 @@ for (i in 1:length(data_used.time.keyword) - 1) {
   # data_used.RandomWalk$confint[[j]]
   
   
-  data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
+  # data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
   # data_gradient_arima_temp <- arima(data_temp,order = c(1,1,0))
   
   # Ljung-Box 分析
-  Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
+  data_used.RandomWalk.Box_test[[j]] <- Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
   data_used.RandomWalk.Box_test[[j]]
 
   # # 这个是用ARIMA方法做的，有误
   # data_used.RandomWalk.Box_test[[j]] <- Box.test(residuals(data_arima_temp), type = 'Ljung-Box')
-  # data_used.RandomWalk.Box_test[[j]] <-
+  
 
   
   # # ADF 分析
@@ -348,7 +337,9 @@ xlsx::write.xlsx2(
 # )
 
 # 数据框2:
-data_used.RandomWalk_dataframe <- (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% data.frame()
+data_used.RandomWalk_dataframe <- data.frame(
+  (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% as.numeric()
+  )
 
 names(data_used.RandomWalk_dataframe) <- c(
   'Ljung-Box p值'
@@ -359,7 +350,6 @@ output_data.data_type <- "判断随机游走"
 output_data.file_name <-
   paste(
     "金砖四国",
-    "_",
     output_data.data_name,
     output_data.data_type,
     "_",
@@ -391,18 +381,28 @@ xlsx::write.xlsx2(
 input_sheet_name <- "印度日度数据"
 
 
-# 提取需要的区间段
+# # 提取需要的区间段1
+# data_time_keyword <-
+#   as.character(c(
+#     '1973-01-02',
+#     '1975-09-24',
+#     '1992-03-02',
+#     '2009-02-02',
+#     '2018-12-31'
+#   ))
+
+# 提取需要的区间段2
 data_time_keyword <-
-  as.character(c(
-    '1973-01-02',
-    '1975-09-24',
-    '1992-03-02',
-    '2009-02-02',
-    '2018-12-31'
-  ))
+  as.character(
+    c(
+      '1994-01-03',
+      '2018-12-31'
+    )
+  )
 
 # 输出的数据的数据表名称
 output_sheet_name <- "印度"
+
 
 
 
@@ -500,26 +500,6 @@ data_used.RandomWalk <-
 data_used.RandomWalk.Box_test <- list()
 
 
-# for (i in 1:length(data_used.time.keyword) - 1) {
-#   i
-#   data_used.mean[i] <-
-#     mean(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
-#   data_used.variance[i] <-
-#     sd(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
-#   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
-#   data_used.gradient.mean[i] <-
-#     mean(data_used.gradient$data[data_used.gradient.timeRange.index[i]+1:data_used.gradient.timeRange.index[i+1]-1])
-#   data_used.gradient.variance[i] <-
-#     sd(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
-#                                   1:data_used.gradient.timeRange.index[i + 1] - 1])
-#   data_used.rate_of_change.mean[i] <-
-#     mean(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
-#                                          1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
-#   data_used.rate_of_change.variance[i] <-
-#     sd(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
-#                                         1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
-# }
-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_temp <-
@@ -580,12 +560,12 @@ for (i in 1:length(data_used.time.keyword) - 1) {
   # data_gradient_arima_temp <- arima(data_temp,order = c(1,1,0))
   
   # Ljung-Box 分析
-  Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
+  data_used.RandomWalk.Box_test[[j]] <- Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
   data_used.RandomWalk.Box_test[[j]]
 
   # # 这个是用ARIMA方法做的，有误
   # data_used.RandomWalk.Box_test[[j]] <- Box.test(residuals(data_arima_temp), type = 'Ljung-Box')
-  # data_used.RandomWalk.Box_test[[j]] <-
+  
 
   
   # # ADF 分析
@@ -695,7 +675,9 @@ xlsx::write.xlsx2(
 # )
 
 # 数据框2:
-data_used.RandomWalk_dataframe <- (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% data.frame()
+data_used.RandomWalk_dataframe <- data.frame(
+  (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% as.numeric()
+  )
 
 names(data_used.RandomWalk_dataframe) <- c(
   'Ljung-Box p值'
@@ -706,7 +688,6 @@ output_data.data_type <- "判断随机游走"
 output_data.file_name <-
   paste(
     "金砖四国",
-    "_",
     output_data.data_name,
     output_data.data_type,
     "_",
@@ -732,24 +713,34 @@ xlsx::write.xlsx2(
 
 
 
-
 ##### 俄罗斯的 #######
 
 # 输入的数据的数据表名称
 input_sheet_name <- "俄罗斯日度数据"
 
-# 提取需要的区间段
+# # 提取需要的区间段1
+# data_time_keyword <-
+#   as.character(c(
+#     '1992-07-01',
+#     '1995-07-06',
+#     '1998-08-17',
+#     '2014-11-10',
+#     '2018-12-31'
+#   ))
+
+# 提取需要的区间段2
 data_time_keyword <-
-  as.character(c(
-    '1992-07-01',
-    '1995-07-06',
-    '1998-08-17',
-    '2014-11-10',
-    '2018-12-31'
-  ))
+  as.character(
+    c(
+      '1994-01-03',
+      '2018-12-31'
+    )
+  )
+
 
 # 输出的数据的数据表名称
 output_sheet_name <- "俄罗斯"
+
 
 
 
@@ -847,26 +838,6 @@ data_used.RandomWalk <-
 data_used.RandomWalk.Box_test <- list()
 
 
-# for (i in 1:length(data_used.time.keyword) - 1) {
-#   i
-#   data_used.mean[i] <-
-#     mean(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
-#   data_used.variance[i] <-
-#     sd(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
-#   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
-#   data_used.gradient.mean[i] <-
-#     mean(data_used.gradient$data[data_used.gradient.timeRange.index[i]+1:data_used.gradient.timeRange.index[i+1]-1])
-#   data_used.gradient.variance[i] <-
-#     sd(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
-#                                   1:data_used.gradient.timeRange.index[i + 1] - 1])
-#   data_used.rate_of_change.mean[i] <-
-#     mean(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
-#                                          1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
-#   data_used.rate_of_change.variance[i] <-
-#     sd(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
-#                                         1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
-# }
-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_temp <-
@@ -923,16 +894,16 @@ for (i in 1:length(data_used.time.keyword) - 1) {
   # data_used.RandomWalk$confint[[j]]
   
   
-  data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
+  # data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
   # data_gradient_arima_temp <- arima(data_temp,order = c(1,1,0))
   
   # Ljung-Box 分析
-  Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
+  data_used.RandomWalk.Box_test[[j]] <- Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
   data_used.RandomWalk.Box_test[[j]]
 
   # # 这个是用ARIMA方法做的，有误
   # data_used.RandomWalk.Box_test[[j]] <- Box.test(residuals(data_arima_temp), type = 'Ljung-Box')
-  # data_used.RandomWalk.Box_test[[j]] <-
+  
 
   
   # # ADF 分析
@@ -1042,7 +1013,9 @@ xlsx::write.xlsx2(
 # )
 
 # 数据框2:
-data_used.RandomWalk_dataframe <- (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% data.frame()
+data_used.RandomWalk_dataframe <- data.frame(
+  (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% as.numeric()
+  )
 
 names(data_used.RandomWalk_dataframe) <- c(
   'Ljung-Box p值'
@@ -1053,7 +1026,6 @@ output_data.data_type <- "判断随机游走"
 output_data.file_name <-
   paste(
     "金砖四国",
-    "_",
     output_data.data_name,
     output_data.data_type,
     "_",
@@ -1081,21 +1053,31 @@ xlsx::write.xlsx2(
 # 输入的数据的数据表名称
 input_sheet_name <- "巴西日度数据"
 
-# 提取需要的区间段
+# # 提取需要的区间段1
+# data_time_keyword <-
+#   as.character(
+#     c(
+#       '1984-12-03',
+#       '1991-10-01',
+#       '1994-07-01',
+#       '1999-02-01',
+#       '2002-10-25',
+#       '2008-08-05',
+#       '2009-10-19',
+#       '2015-09-25',
+#       '2018-12-31'
+#     )
+#   )
+
+# 提取需要的区间段2
 data_time_keyword <-
   as.character(
     c(
-      '1984-12-03',
-      '1991-10-01',
-      '1994-07-01',
-      '1999-02-01',
-      '2002-10-25',
-      '2008-08-05',
-      '2009-10-19',
-      '2015-09-25',
+      '1994-01-03',
       '2018-12-31'
     )
   )
+
 
 # 输出的数据的数据表名称
 output_sheet_name <- "巴西"
@@ -1196,26 +1178,6 @@ data_used.RandomWalk <-
 data_used.RandomWalk.Box_test <- list()
 
 
-# for (i in 1:length(data_used.time.keyword) - 1) {
-#   i
-#   data_used.mean[i] <-
-#     mean(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
-#   data_used.variance[i] <-
-#     sd(data_used$data[data_used.timeRange.index[i]:data_used.timeRange.index[i+1]-1])
-#   # 对于各段差分数据等类型的数据的描述性统计的计算，每段的第一个数据值不计入计算。
-#   data_used.gradient.mean[i] <-
-#     mean(data_used.gradient$data[data_used.gradient.timeRange.index[i]+1:data_used.gradient.timeRange.index[i+1]-1])
-#   data_used.gradient.variance[i] <-
-#     sd(data_used.gradient$data[data_used.gradient.timeRange.index[i] +
-#                                   1:data_used.gradient.timeRange.index[i + 1] - 1])
-#   data_used.rate_of_change.mean[i] <-
-#     mean(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
-#                                          1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
-#   data_used.rate_of_change.variance[i] <-
-#     sd(data_used.rate_of_change$data[data_used.rate_of_change.timeRange.index[i] +
-#                                         1:data_used.rate_of_change.timeRange.index[i + 1] - 1])
-# }
-
 j = 1
 for (i in 1:length(data_used.time.keyword) - 1) {
   data_temp <-
@@ -1272,16 +1234,16 @@ for (i in 1:length(data_used.time.keyword) - 1) {
   # data_used.RandomWalk$confint[[j]]
   
   
-  data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
+  # data_arima_temp <- arima(data_temp, order = c(1, 0, 0))
   # data_gradient_arima_temp <- arima(data_temp,order = c(1,1,0))
   
   # Ljung-Box 分析
-  Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
+  data_used.RandomWalk.Box_test[[j]] <- Box.test(data_gradient_temp-mean(data_gradient_temp), type = 'Ljung-Box')
   data_used.RandomWalk.Box_test[[j]]
 
   # # 这个是用ARIMA方法做的，有误
   # data_used.RandomWalk.Box_test[[j]] <- Box.test(residuals(data_arima_temp), type = 'Ljung-Box')
-  # data_used.RandomWalk.Box_test[[j]] <-
+  
 
   
   # # ADF 分析
@@ -1391,7 +1353,9 @@ xlsx::write.xlsx2(
 # )
 
 # 数据框2:
-data_used.RandomWalk_dataframe <- (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% data.frame()
+data_used.RandomWalk_dataframe <- data.frame(
+  (data_used.RandomWalk.Box_test %>% transpose())[['p.value']]  %>% matrix(ncol = 1, byrow = TRUE) %>% as.numeric()
+  )
 
 names(data_used.RandomWalk_dataframe) <- c(
   'Ljung-Box p值'
@@ -1417,4 +1381,10 @@ xlsx::write.xlsx2(
   sheetName = output_data.sheet_name,
   append = TRUE
 )
+
+
+
+
+
+
 
